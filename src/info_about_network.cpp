@@ -1,7 +1,9 @@
 #include <Rcpp.h>
-#include <Node.h>
+#include "Node.h"
 
 using namespace Rcpp;
+
+using Node_Vec = std::vector<Node>;
 
 // [[Rcpp::export]]
 List info_about_network(const CharacterVector nodes_id,
@@ -15,7 +17,16 @@ List info_about_network(const CharacterVector nodes_id,
   const int num_edges = edges_from.size();
   const int num_types = types_name.size();
 
+  Node_Vec nodes;
+  nodes.reserve(num_nodes);
+  for(int i = 0; i < num_nodes; i++){
+    nodes.emplace_back(i, i);
+  }
+
+
+
   return List::create(_["num_nodes"] = num_nodes,
+                      _["node_vec_s"] = nodes.size(),
                       _["num_edges"] = num_edges,
                       _["num_types"] = num_types);
 }

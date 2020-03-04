@@ -1,4 +1,6 @@
 #include <Rcpp.h>
+#include <Node.h>
+
 using namespace Rcpp;
 
 // [[Rcpp::export]]

@@ -40,12 +40,12 @@ public:
   // ===========================================================================
   string get_id(const Rcpp::CharacterVector &nodes_id) const
   {
-    return nodes_id.at(index);
+    return std::string(nodes_id.at(index));
   }
 
   string get_type(const Rcpp::CharacterVector &types_name) const
   {
-    return types_name.at(type_index);
+    return std::string(types_name.at(type_index));
   }
 
   int get_degree() const

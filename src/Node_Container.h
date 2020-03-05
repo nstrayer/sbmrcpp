@@ -100,6 +100,15 @@ public:
   {
     return type_info.at(type_int);
   }
+
+  Node at(const int i){
+    if (i < -1 | i > nodes.size()){
+      stop("Invalid node index.");
+    }
+    return nodes[i];
+  }
+
+
 };
 
 // ## `Node_Container::`

@@ -27,7 +27,7 @@ public:
   // Data
   Node_Vec nodes;          // Same order as in `node_*` inputs.
   Type_Info_Map type_info; // Keyed by type_index, returns info about that type in relation to internal nodes vector
-
+  std::map<string, int> type_to_index;
   // Setters
   // ===========================================================================
   Node_Container(const Rcpp::CharacterVector &nodes_id,
@@ -38,7 +38,6 @@ public:
     const int num_types = types_name.size();
 
     // Build a map to go from type name to index for faster lookup
-    std::map<string, int> type_to_index;
     for (int i = 0; i < num_types; i++)
     {
       type_to_index.emplace(types_name[i], i);

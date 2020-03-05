@@ -166,4 +166,14 @@ context("Fully connected tripartite network") {
     expect_true(edges.edge_types.size() == 3);
   }
 
+  test_that("Throws error if we have told network that we've restricted edge types"){
+    // Allow edges between a and b and a and c types but not b-c
+    expect_error(
+      Edge_Container(edges_from, edges_to,
+                     nodes_id, nodes,
+                     Rcpp::CharacterVector{"a", "a"},
+                     Rcpp::CharacterVector{"b", "c"})
+    );
+  }
+
 }

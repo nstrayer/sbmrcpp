@@ -13,26 +13,16 @@ List info_about_network(const CharacterVector nodes_id,
                         const CharacterVector types_name,
                         const CharacterVector types_count)
 {
-  const int num_nodes = nodes_id.size();
-  const int num_edges = edges_from.size();
-  const int num_types = types_name.size();
-
   auto nodes = Node_Container(nodes_id, nodes_type, types_name);
   auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
 
-
-
-
-
-
-
-  return List::create(_["num_nodes"] = num_nodes,
-                      _["num_edges"] = num_edges,
+  return List::create(_["num_nodes"] = nodes.size(),
+                      _["num_types"] = nodes.num_types(),
+                      _["num_edges"] = edges.size(),
                       _["first type start"] = nodes.get_nodes_of_type(0).start_index,
                       _["first type size"] = nodes.get_nodes_of_type(0).size,
                       _["second type start"] = nodes.get_nodes_of_type(1).start_index,
-                      _["second type size"] = nodes.get_nodes_of_type(1).size,
-                      _["num_types"] = num_types);
+                      _["second type size"] = nodes.get_nodes_of_type(1).size);
 }
 
 

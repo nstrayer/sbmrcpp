@@ -110,6 +110,9 @@ public:
     return nodes.size();
   }
 
+  int num_types() const {
+    return type_info.size();
+  }
 
   bool is_multipartite() const {
     return type_info.size() > 1;

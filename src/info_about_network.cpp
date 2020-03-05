@@ -1,9 +1,10 @@
 #include <Rcpp.h>
 #include "Node_Container.h"
+#include "Ordered_Pair.h"
 
 using namespace Rcpp;
 
-
+using Ordered_Ints = Ordered_Pair<int>;
 // [[Rcpp::export]]
 List info_about_network(const CharacterVector nodes_id,
                         const CharacterVector nodes_type,
@@ -17,6 +18,10 @@ List info_about_network(const CharacterVector nodes_id,
   const int num_types = types_name.size();
 
   auto nodes = Node_Container(nodes_id, nodes_type, types_name);
+
+
+
+
 
 
 

@@ -38,9 +38,12 @@ template <typename T>
 bool operator<(const Ordered_Pair<T> &a, const Ordered_Pair<T> &b)
 {
   // If the first value is same as second, then check the second
-  if (a.first() == b.first()){
+  if (a.first() == b.first())
+  {
     return a.second() < b.second();
-  } else {
+  }
+  else
+  {
     return a.first() < b.first();
   }
 }

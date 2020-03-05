@@ -5,19 +5,28 @@
 
 using namespace Rcpp;
 
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP _sbmrcpp_rcpp_hello_world() {
+// info_about_network
+List info_about_network(const CharacterVector nodes_id, const CharacterVector nodes_type, const CharacterVector edges_from, const CharacterVector edges_to, const CharacterVector types_name, const CharacterVector types_count);
+RcppExport SEXP _sbmrcpp_info_about_network(SEXP nodes_idSEXP, SEXP nodes_typeSEXP, SEXP edges_fromSEXP, SEXP edges_toSEXP, SEXP types_nameSEXP, SEXP types_countSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello_world());
+    Rcpp::traits::input_parameter< const CharacterVector >::type nodes_id(nodes_idSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector >::type nodes_type(nodes_typeSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector >::type edges_from(edges_fromSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector >::type edges_to(edges_toSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector >::type types_name(types_nameSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector >::type types_count(types_countSEXP);
+    rcpp_result_gen = Rcpp::wrap(info_about_network(nodes_id, nodes_type, edges_from, edges_to, types_name, types_count));
     return rcpp_result_gen;
 END_RCPP
 }
 
+RcppExport SEXP run_testthat_tests();
+
 static const R_CallMethodDef CallEntries[] = {
-    {"_sbmrcpp_rcpp_hello_world", (DL_FUNC) &_sbmrcpp_rcpp_hello_world, 0},
+    {"_sbmrcpp_info_about_network", (DL_FUNC) &_sbmrcpp_info_about_network, 6},
+    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 0},
     {NULL, NULL, 0}
 };
 

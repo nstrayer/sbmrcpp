@@ -59,6 +59,9 @@ public:
   }
   // Getters
   // ===========================================================================
+  int size() const {
+    return edges.size();
+  }
 };
 // ## `Edge_Container::`
 // __Data__

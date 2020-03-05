@@ -20,9 +20,12 @@ List info_about_network(const CharacterVector nodes_id,
 
 
 
-
   return List::create(_["num_nodes"] = num_nodes,
                       _["num_edges"] = num_edges,
+                      _["first type start"] = nodes.get_nodes_of_type(0).start_index,
+                      _["first type size"] = nodes.get_nodes_of_type(0).size,
+                      _["second type start"] = nodes.get_nodes_of_type(1).start_index,
+                      _["second type size"] = nodes.get_nodes_of_type(1).size,
                       _["num_types"] = num_types);
 }
 

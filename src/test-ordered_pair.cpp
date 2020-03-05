@@ -41,6 +41,11 @@ context("Ordered_Pair template works properly with integers") {
     expect_false(p22 < p13);
   }
 
+  test_that("same value tests work"){
+    expect_true(p22.is_matching());
+    expect_false(p12.is_matching());
+  }
+
 }
 
 context("Ordered_Pair template works properly with strings") {
@@ -63,6 +68,11 @@ context("Ordered_Pair template works properly with strings") {
 
     expect_false(p_bb < p_ab);
     expect_false(p_bb < p_ad);
+  }
+
+  test_that("same value tests work"){
+    expect_true(p_bb.is_matching());
+    expect_false(p_ab.is_matching());
   }
 
 }

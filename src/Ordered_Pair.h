@@ -14,17 +14,20 @@ public:
   {
   }
 
-  std::pair<T, T> get() const
-  {
+  std::pair<T, T> get() const {
     return std::make_pair(val_1, val_2);
   }
-  T first() const
-  {
+
+  T first() const {
     return val_1;
   }
-  T second() const
-  {
+
+  T second() const {
     return val_2;
+  }
+
+  bool is_matching() const {
+    return val_1 == val_2;
   }
 };
 

@@ -9,6 +9,7 @@
 
 // All test files should include the <testthat.h>
 // header file.
+#include <unordered_set>
 #include <testthat.h>
 #include "Ordered_Pair.h"
 
@@ -36,6 +37,23 @@ context("Ordered_Pair template works properly") {
 
     expect_false(p22 < p12);
     expect_false(p22 < p13);
+  }
+
+}
+
+context("Hashing works properly") {
+
+  std::unordered_set<Ordered_Pair<int>, Ordered_Pair_Hash<int>> pair_set;
+
+
+  pair_set.insert(Ordered_Pair<int>(1,2));
+  pair_set.insert(Ordered_Pair<int>(2,1));
+  pair_set.insert(Ordered_Pair<int>(2,2));
+  pair_set.insert(Ordered_Pair<int>(3,2));
+  pair_set.insert(Ordered_Pair<int>(3,1));
+
+  test_that("Size is right") {
+    expect_true(pair_set.size() == 4); // One duplicate added
   }
 
 }

@@ -52,18 +52,19 @@ public:
   {
     return edge_indices.size();
   }
+
+  // Comparison operators
+  // ===========================================================================
+  bool operator==(const Node &b) const
+  {
+    return index == b.index;
+  }
+
+  bool operator<(const Node &b) const
+  {
+    return index < b.index;
+  }
 };
 
-// Comparison operators
-// ===========================================================================
-bool operator==(const Node &a, const Node &b)
-{
-  return a.index == b.index;
-}
-
-bool operator<(const Node &a, const Node &b)
-{
-  return a.index < b.index;
-}
 
 #endif

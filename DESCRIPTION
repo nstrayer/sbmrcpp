@@ -9,4 +9,4 @@ Description: One paragraph description of what the package does as one or more f
           sentences.
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.3)
-LinkingTo: Rcpp
+LinkingTo: Rcpp, testthat

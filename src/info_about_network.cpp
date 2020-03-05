@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-#include "Node_Container.h"
+#include "Edge_Container.h"
 #include "Ordered_Pair.h"
 
 using namespace Rcpp;
@@ -18,6 +18,7 @@ List info_about_network(const CharacterVector nodes_id,
   const int num_types = types_name.size();
 
   auto nodes = Node_Container(nodes_id, nodes_type, types_name);
+  auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
 
 
 

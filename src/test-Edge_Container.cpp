@@ -10,19 +10,20 @@ context("Basic unipartite network") {
   const Rcpp::CharacterVector nodes_type{"a", "a", "a"};
   const Rcpp::CharacterVector types_name{"a"};
 
-  auto nodes = Node_Container(nodes_id, nodes_type, types_name);
 
   // Fully connected network (Except a3, which is not connected to itself)
   const Rcpp::CharacterVector edges_from{"a1", "a1", "a1", "a2", "a2"};
   const Rcpp::CharacterVector   edges_to{"a1", "a2", "a3", "a2", "a3"};
 
   test_that("Sizing is correct") {
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name);
     auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
 
     expect_true(edges.size() == 5);
   }
 
   test_that("Edge types were tracked"){
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name);
     auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
 
     expect_true(edges.edge_types.size() == 1);
@@ -48,6 +49,31 @@ context("Checking of node correctness") {
     );
   }
 }
+
+context("Node edges are updated after construction of Edge_Container") {
+
+  const Rcpp::CharacterVector nodes_id{"a1", "a2", "a3"};
+  const Rcpp::CharacterVector nodes_type{"a", "a", "a"};
+  const Rcpp::CharacterVector types_name{"a"};
+
+  // Try to connect a node a4 that wasn't declared in nodes
+  const Rcpp::CharacterVector edges_from{"a1", "a1", "a1", "a3"};
+  const Rcpp::CharacterVector   edges_to{"a1", "a2", "a3", "a2"};
+
+  test_that("Edges update on passed nodes container") {
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name);
+
+    expect_true(nodes.at(0).get_degree() == 0); // a1
+    expect_true(nodes.at(1).get_degree() == 0); // a2
+    expect_true(nodes.at(2).get_degree() == 0); // a3
+
+    auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
+    expect_true(nodes.at(0).get_degree() == 4); // a1
+    expect_true(nodes.at(1).get_degree() == 2); // a2
+    expect_true(nodes.at(2).get_degree() == 2); // a3
+  }
+}
+
 
 context("Basic bipartite network") {
 

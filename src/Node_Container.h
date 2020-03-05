@@ -39,10 +39,8 @@ public:
 
     // Build a map to go from type name to index for faster lookup
     std::map<string, int> type_to_index;
-    Rcout << "Building type to index map..." << std::endl;
     for (int i = 0; i < num_types; i++)
     {
-      Rcout << "   " << types_name[i] << " - " << i << std::endl;
       type_to_index.emplace(types_name[i], i);
     }
 

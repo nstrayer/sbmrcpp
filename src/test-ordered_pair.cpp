@@ -69,8 +69,7 @@ context("Ordered_Pair template works properly with strings") {
 
 context("Hashing works properly with ints") {
 
-  std::unordered_set<Int_Pair, Ordered_Pair_Hash<int>> pair_set;
-
+  Ordered_Pair_Set<int> pair_set;
 
   pair_set.insert(Int_Pair(1,2));
   pair_set.insert(Int_Pair(2,1));
@@ -86,8 +85,7 @@ context("Hashing works properly with ints") {
 
 context("Hashing works properly with strings") {
 
-  std::unordered_set<String_Pair, Ordered_Pair_Hash<std::string>> pair_set;
-
+  Ordered_Pair_Set<std::string> pair_set;
 
   pair_set.insert(String_Pair("a","b"));
   pair_set.insert(String_Pair("b","a"));

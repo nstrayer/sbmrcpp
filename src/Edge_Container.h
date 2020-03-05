@@ -15,7 +15,7 @@ class Edge_Container {
 public:
   // Data
   std::vector<Ordered_Pair<int>> edges; // Mirrors order of `edges_*` vectors
-  Ordered_Pair_Set<int> edge_types;  // Contains all the observed or allowed edge types
+  Ordered_Pair_Set<int> edge_types;
   bool types_specified = false; // Did the user explicitly state the allowed edge types
 
   // Setters
@@ -23,7 +23,20 @@ public:
   Edge_Container(const CharacterVector& edges_from,
                  const CharacterVector& edges_to,
                  const CharacterVector& nodes_id,
-                 Node_Container &nodes){
+                 Node_Container &nodes,
+                 const CharacterVector& allowed_types_from = {},
+                 const CharacterVector& allowed_types_to = {}){
+
+    // If our edge_types_* vectors are not empty, we need to build allowed types
+    if (allowed_types_from.size() != 0) {
+      types_specified = true;
+
+      for (int i = 0; i < allowed_types_from.size(); i++) {
+        Edge_Type(nodes.type_to_index.at(string(allowed_types_from[i])),
+                  nodes.type_to_index.at(string(allowed_types_to[i])));
+      }
+
+    }
 
     // We need to quickly go from a node string id to its integer index in nodes_* vectors
     std::unordered_map<string, Node&> node_id_to_index;
@@ -72,7 +85,6 @@ public:
         }
       }
 
-
       edges.emplace_back(from_node->index, to_node->index);
 
       // Add edges to nodes as well
@@ -84,7 +96,6 @@ public:
     if (!multipartite_nodes) {
       edge_types.insert(Edge_Type(0, 0));
     }
-
   }
   // Getters
   // ===========================================================================
@@ -92,23 +103,5 @@ public:
     return edges.size();
   }
 };
-
-
-// ## `Edge_Container::`
-// __Data__
-// `vec<Edge>      edges`: Vector containing `Edges` that mirror order of `edges_*` vectors
-// `set<Edge_Type> edge_types`: Unordered set containing all the observed or allowed edge types
-// `bool           specified_types`: Are edges to be build with specified types or do we figure out type pairs with data?
-
-// __Setters__
-// `Edge_Container(edges_*, nodes_id, allowed_edges_*)`:
-//   - Build unordered_map of node id string -> index in `nodes_id`
-//   - If we have `allowed_edges_*`
-//     - Build `edge_types` from allowed and freeze it using `specified_types = true`
-//   - Loop through `edges_*`
-//     - Build `Edge` using id-to-string map
-//     - Grab edge type using `Edge.get_type()`
-//       - If `specified_types`, make sure it's in `edge_types`
-//       - Otherwise just `insert()` it into `edge_types`
 
 #endif

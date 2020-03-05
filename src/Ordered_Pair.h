@@ -48,6 +48,15 @@ bool operator<(const Ordered_Pair<T> &a, const Ordered_Pair<T> &b)
   }
 }
 
+// Hash function for ordered pairs so they can be used in hashed containers like unordered_map and unordered_set
+template <typename T>
+struct Ordered_Pair_Hash {
+  size_t operator()(const Ordered_Pair<T> p) const
+  {
+    return std::hash<T>()(p.first()) ^ std::hash<T>()(p.second());
+  }
+};
+
 // `Bool   ==(Edge_Type a, Edge_Type b)`: Check if `a.type_1_index == b.type_1_index & a.type_2_index == b.type_2_index`
 // `size_t hash(Edge_Type e_t)`: Combine hashes for both type indexes. I.e. `return Hash<int>()(e_t.type_1_index)^ Hash<int>()(e_t.type_2_index);`
 

@@ -2,7 +2,7 @@ library(tidyverse)
 library(sbmR)
 
 
-edges <- clements_pollinators
+edges <- clements_pollinators %>% sample_n(100)
 
 nodes <- bind_rows(tibble(id = edges$pollinator,
                           type = "pollinator"),

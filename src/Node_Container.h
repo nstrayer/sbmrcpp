@@ -101,7 +101,11 @@ public:
     return type_info.at(type_int);
   }
 
-  Node at(const int i){
+  int size() const {
+    return nodes.size();
+  }
+
+  Node& at(const int i){
     if (i < -1 | i > nodes.size()){
       stop("Invalid node index.");
     }

@@ -60,7 +60,6 @@ struct Ordered_Pair_Hash {
 
 template <typename T>
   using Ordered_Pair_Set = std::unordered_set<Ordered_Pair<T>, Ordered_Pair_Hash<T>>;
-// `Bool   ==(Edge_Type a, Edge_Type b)`: Check if `a.type_1_index == b.type_1_index & a.type_2_index == b.type_2_index`
-// `size_t hash(Edge_Type e_t)`: Combine hashes for both type indexes. I.e. `return Hash<int>()(e_t.type_1_index)^ Hash<int>()(e_t.type_2_index);`
+
 
 #endif

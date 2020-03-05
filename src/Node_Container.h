@@ -94,8 +94,16 @@ public:
     }
   }
 
+
   // Getters
   // ===========================================================================
+  Node& at(const int i){
+    if (i < -1 | i > nodes.size()){
+      stop("Invalid node index.");
+    }
+    return nodes[i];
+  }
+
   Type_Info get_nodes_of_type(const int type_int) const
   {
     return type_info.at(type_int);
@@ -105,11 +113,9 @@ public:
     return nodes.size();
   }
 
-  Node& at(const int i){
-    if (i < -1 | i > nodes.size()){
-      stop("Invalid node index.");
-    }
-    return nodes[i];
+
+  bool is_multipartite() const {
+    return type_info.size() > 1;
   }
 
 

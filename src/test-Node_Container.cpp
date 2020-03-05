@@ -31,6 +31,8 @@ context("Basic loading unipartite network") {
   test_that("Type info is correct") {
     auto nodes = Node_Container(nodes_id, nodes_type, types_name);
 
+    expect_false(nodes.is_multipartite());
+
     expect_true(nodes.get_nodes_of_type(0).start_index == 0);
     expect_true(nodes.get_nodes_of_type(0).size == 3);
   }
@@ -52,6 +54,8 @@ context("Basic loading bipartite network") {
   test_that("Type info is correct") {
     auto nodes = Node_Container(nodes_id, nodes_type, types_name);
 
+    expect_true(nodes.is_multipartite());
+
     expect_true(nodes.get_nodes_of_type(0).start_index == 0);
     expect_true(nodes.get_nodes_of_type(0).size == 2);
     expect_true(nodes.get_nodes_of_type(1).start_index == 2);
@@ -72,6 +76,8 @@ context("Basic loading tripartite network") {
 
   test_that("Type info is correct") {
     auto nodes = Node_Container(nodes_id, nodes_type, types_name);
+
+    expect_true(nodes.is_multipartite());
 
     expect_true(nodes.get_nodes_of_type(0).start_index == 0);
     expect_true(nodes.get_nodes_of_type(0).size == 2);

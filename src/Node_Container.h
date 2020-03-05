@@ -14,6 +14,7 @@ struct Type_Info
 };
 
 using Type_Info_Map = std::map<int, Type_Info>;
+using Node_Vec = std::vector<Node>;
 
 class Node_Container
 {
@@ -39,17 +40,18 @@ public:
         }
 
         // Keep track of last seen type (starting at first one)
-        int current_type_start_index = 0;
+        int type_start_index_in_nodes = 0;
         int current_type_index;
         std::string current_type;
 
         for (int i = 0; i < num_nodes; i++)
         {
             const auto node_type = std::string(nodes_type[i]);
-            
-            const bool first_node = i == 0;
-            const bool last_node = i == (num_nodes - 1);
+
             const bool new_type = current_type != node_type;
+
+            // We've finished a type's nodes if we have a new type and its not the very first node or its the last node
+            const bool finished_type = (new_type & (i != 0)) | (i == (num_nodes - 1));
 
             if (new_type)
             {
@@ -59,29 +61,30 @@ public:
                 }
 
                 // Find index for type
-                const auto type_index_it = type_to_index.find(new_type);
+                const auto type_index_it = type_to_index.find(node_type);
                 // Make sure it fits what we were given
                 if (type_index_it == type_to_index.end())
                 {
-                    Rcpp::stop("Node " + string(nodes_name[i]) + " has type (" + string(nodes_type[i]) + ") not found in provided node types");
+                    Rcpp::stop("Node " + string(nodes_id[i]) + " has type (" + string(nodes_type[i]) + ") not found in provided node types");
                 }
 
-                current_type_index = *type_index_it;
+                current_type_index = type_index_it->second;
             }
 
-            if (new_type & !first_node | last_node){
-                const int num_nodes_of_type = i - current_type_start_index;
+            if (finished_type)
+            {
+                const int num_nodes_of_type = i - type_start_index_in_nodes;
 
                 // Build type_info struct for the just finished class
-                type_info.emplace(current_type_index, Type_Info(current_type_start_index, num_nodes_of_type));
+                type_info.emplace(current_type_index, Type_Info(type_start_index_in_nodes, num_nodes_of_type));
 
-                // Update current type to be the new type for the current node
-                current_type = current_type;
-                current_type_start_index = i;
+                // now we setup for the next type's nodes
+                current_type = node_type;
+                type_start_index_in_nodes = i;
             }
 
             // Initialize node in next slot in nodes vector
-            nodes.emplace_back(i, *type_index_it);
+            nodes.emplace_back(i, current_type_index);
         }
     }
     // Getters

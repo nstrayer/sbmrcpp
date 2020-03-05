@@ -13,8 +13,12 @@ struct Type_Info
     Type_Info(int i, int s) : start_index(i), size(s) {}
 };
 
+
+using namespace Rcpp;
+
 using Type_Info_Map = std::map<int, Type_Info>;
 using Node_Vec = std::vector<Node>;
+
 
 class Node_Container
 {
@@ -34,61 +38,66 @@ public:
 
         // Build a map to go from type name to index for faster lookup
         std::map<string, int> type_to_index;
+        Rcout << "Building type to index map..." << std::endl;
         for (int i = 0; i < num_types; i++)
         {
+            Rcout << "   " << types_name[i] << " - " << i << std::endl;
             type_to_index.emplace(types_name[i], i);
         }
 
         // Keep track of last seen type (starting at first one)
         int type_start_index_in_nodes = 0;
-        int current_type_index;
-        std::string current_type;
+        string current_type = string(nodes_type[0]);
+        int current_type_index = type_to_index.at(current_type);
 
         for (int i = 0; i < num_nodes; i++)
         {
+
             const auto node_type = std::string(nodes_type[i]);
 
             const bool new_type = current_type != node_type;
+            const bool last_node = i == (num_nodes - 1);
 
-            // We've finished a type's nodes if we have a new type and its not the very first node or its the last node
-            const bool finished_type = (new_type & (i != 0)) | (i == (num_nodes - 1));
-
-            if (new_type)
+            // We've finished a type's nodes if we have a new type or its the last node
+            if (new_type | last_node)
             {
-                if (current_type > node_type)
-                {
-                    Rcpp::stop("Nodes not supplied in order. Make sure not to modify the node order");
-                }
-
-                // Find index for type
-                const auto type_index_it = type_to_index.find(node_type);
-                // Make sure it fits what we were given
-                if (type_index_it == type_to_index.end())
-                {
-                    Rcpp::stop("Node " + string(nodes_id[i]) + " has type (" + string(nodes_type[i]) + ") not found in provided node types");
-                }
-
-                current_type_index = type_index_it->second;
-            }
-
-            if (finished_type)
-            {
-                const int num_nodes_of_type = i - type_start_index_in_nodes;
+                const int end_index = last_node ? i : i - 1;
+                const int num_nodes_of_type = (end_index - type_start_index_in_nodes) + 1;
 
                 // Build type_info struct for the just finished class
-                type_info.emplace(current_type_index, Type_Info(type_start_index_in_nodes, num_nodes_of_type));
+                type_info.emplace(current_type_index,
+                                  Type_Info(type_start_index_in_nodes, num_nodes_of_type));
 
                 // now we setup for the next type's nodes
                 current_type = node_type;
                 type_start_index_in_nodes = i;
             }
 
+            if (new_type)
+            {
+                if (current_type > node_type)
+                    Rcpp::stop("Nodes not supplied in order. Make sure not to modify the node order");
+
+                // Find index for type
+                const auto type_index_it = type_to_index.find(node_type);
+
+                // Make sure it fits what we were given
+                if (type_index_it == type_to_index.end())
+                    Rcpp::stop("Node " + string(nodes_id[i]) + " has type (" + string(nodes_type[i]) + ") not found in provided node types");
+
+                current_type_index = type_index_it->second;
+            }
+
             // Initialize node in next slot in nodes vector
             nodes.emplace_back(i, current_type_index);
         }
     }
+
     // Getters
     // ===========================================================================
+    Type_Info get_nodes_of_type(const int type_int) const {
+        return type_info.at(type_int);
+    }
 };
 
 // ## `Node_Container::`

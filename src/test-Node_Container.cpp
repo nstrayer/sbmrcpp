@@ -117,5 +117,15 @@ context("Basic loading tripartite network") {
     expect_error(nodes.at(Node_Loc(1, 1))); // No b2 node
   }
 
+  test_that("Node it map works properly"){
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
+
+    const auto id_to_node = nodes.get_id_to_node_map(nodes_id);
+
+    expect_true(id_to_node.at("a2")->index == 1); // a2
+    expect_true(id_to_node.at("b1")->index == 2); // b1
+    expect_true(id_to_node.at("c2")->index == 4); // c2
+  }
+
 
 }

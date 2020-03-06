@@ -23,7 +23,7 @@ public:
   int index;           // Index of this node in `nodes_*` vectors
   int type_index;      // Index of node type in `types_*` vectors
   Node_Ptrs children;  // Vector of pointers to every child node
-  Node* parent_ref;    // Index of block or parent node in next-level's `Node_Container`
+  Node* parent_ref = nullptr;    // Index of block or parent node in next-level's `Node_Container`
 
   // Setters
   // ===========================================================================

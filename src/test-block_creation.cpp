@@ -19,9 +19,9 @@ context("Adding blocks for unipartite network") {
   auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
 
   test_that("Before building blocks, each child node has no parent") {
-    expect_true(nodes.at(0, 0).parent_ref == nullptr); // a1
-    expect_true(nodes.at(0, 1).parent_ref == nullptr); // a2
-    expect_true(nodes.at(0, 2).parent_ref == nullptr); // a3
+    expect_true(nodes.at(0, 0).get_parent() == nullptr); // a1
+    expect_true(nodes.at(0, 1).get_parent() == nullptr); // a2
+    expect_true(nodes.at(0, 2).get_parent() == nullptr); // a3
   }
 
   auto blocks = Node_Container(2, nodes, random_engine);
@@ -31,9 +31,9 @@ context("Adding blocks for unipartite network") {
   }
 
   test_that("Each child node has a parent") {
-    expect_true(nodes.at(0, 0).parent_ref != nullptr); // a1
-    expect_true(nodes.at(0, 1).parent_ref != nullptr); // a2
-    expect_true(nodes.at(0, 2).parent_ref != nullptr); // a3
+    expect_true(nodes.at(0, 0).get_parent() != nullptr); // a1
+    expect_true(nodes.at(0, 1).get_parent() != nullptr); // a2
+    expect_true(nodes.at(0, 2).get_parent() != nullptr); // a3
   }
 
   test_that("Each block node has at least one child") {
@@ -61,14 +61,14 @@ context("Adding blocks for tripartite network") {
 
 
   test_that("Before building blocks, each child node has no parent") {
-    expect_true(nodes.at(0, 0).parent_ref == nullptr); // a1
-    expect_true(nodes.at(0, 1).parent_ref == nullptr); // a2
-    expect_true(nodes.at(0, 2).parent_ref == nullptr); // a3
-    expect_true(nodes.at(1, 0).parent_ref == nullptr); // b1
-    expect_true(nodes.at(1, 1).parent_ref == nullptr); // b2
-    expect_true(nodes.at(2, 0).parent_ref == nullptr); // c1
-    expect_true(nodes.at(2, 1).parent_ref == nullptr); // c2
-    expect_true(nodes.at(2, 2).parent_ref == nullptr); // c3
+    expect_true(nodes.at(0, 0).get_parent() == nullptr); // a1
+    expect_true(nodes.at(0, 1).get_parent() == nullptr); // a2
+    expect_true(nodes.at(0, 2).get_parent() == nullptr); // a3
+    expect_true(nodes.at(1, 0).get_parent() == nullptr); // b1
+    expect_true(nodes.at(1, 1).get_parent() == nullptr); // b2
+    expect_true(nodes.at(2, 0).get_parent() == nullptr); // c1
+    expect_true(nodes.at(2, 1).get_parent() == nullptr); // c2
+    expect_true(nodes.at(2, 2).get_parent() == nullptr); // c3
   }
 
   auto blocks = Node_Container(2, nodes, random_engine);
@@ -78,14 +78,14 @@ context("Adding blocks for tripartite network") {
   }
 
   test_that("Each child node now has a parent") {
-    expect_true(nodes.at(0, 0).parent_ref != nullptr); // a1
-    expect_true(nodes.at(0, 1).parent_ref != nullptr); // a2
-    expect_true(nodes.at(0, 2).parent_ref != nullptr); // a3
-    expect_true(nodes.at(1, 0).parent_ref != nullptr); // b1
-    expect_true(nodes.at(1, 1).parent_ref != nullptr); // b2
-    expect_true(nodes.at(2, 0).parent_ref != nullptr); // c1
-    expect_true(nodes.at(2, 1).parent_ref != nullptr); // c2
-    expect_true(nodes.at(2, 2).parent_ref != nullptr); // c3
+    expect_true(nodes.at(0, 0).get_parent() != nullptr); // a1
+    expect_true(nodes.at(0, 1).get_parent() != nullptr); // a2
+    expect_true(nodes.at(0, 2).get_parent() != nullptr); // a3
+    expect_true(nodes.at(1, 0).get_parent() != nullptr); // b1
+    expect_true(nodes.at(1, 1).get_parent() != nullptr); // b2
+    expect_true(nodes.at(2, 0).get_parent() != nullptr); // c1
+    expect_true(nodes.at(2, 1).get_parent() != nullptr); // c2
+    expect_true(nodes.at(2, 2).get_parent() != nullptr); // c3
   }
 
   test_that("Each block node has at least one child") {

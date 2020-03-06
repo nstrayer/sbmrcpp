@@ -17,13 +17,13 @@ class Node
 {
 private:
   Node_Ptrs edges;     // Vector of pointers to every connected node
+  Node* parent_ref = nullptr;    // Index of block or parent node in next-level's `Node_Container`
 
 public:
   // Data
   int index;           // Index of this node in `nodes_*` vectors
   int type_index;      // Index of node type in `types_*` vectors
   Node_Ptrs children;  // Vector of pointers to every child node
-  Node* parent_ref = nullptr;    // Index of block or parent node in next-level's `Node_Container`
 
   // Setters
   // ===========================================================================
@@ -75,6 +75,12 @@ public:
   {
     return edges.size();
   }
+
+  Node* get_parent() const
+  {
+    return parent_ref;
+  }
+
 
   // Comparison operators
   // ===========================================================================

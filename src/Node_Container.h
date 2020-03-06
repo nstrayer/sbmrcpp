@@ -4,10 +4,13 @@
 // [[Rcpp::plugins(cpp11)]]
 #include <map>
 #include <memory>
+#include <random>
+
 #include <Rcpp.h>
 #include "Node.h"
 
 using namespace Rcpp;
+
 
 // Two dimensional index for a Node in a node container
 struct Node_Loc
@@ -29,10 +32,15 @@ struct Node_Loc
 using Node_Unique_Ptr = std::unique_ptr<Node>;
 using Node_Vec = std::vector<Node_Unique_Ptr>;
 using Node_Type_Vec = std::vector<Node_Vec>;
+using Random_Engine = std::mt19937;
 
 class Node_Container
 {
 private:
+  Random_Engine random_engine{};  // Default random engine state. Seed set in constructor
+  void set_random_seed(const int s) { // Seed engine with a specified state
+    random_engine.seed(s);
+  }
   const void check_for_type(const int type_i) const {
     if (type_i >= nodes.size()) stop("Invalid type");
   }
@@ -40,13 +48,17 @@ public:
   // Data
   Node_Type_Vec nodes;  // Vector of vectors type->nodes of type ordering
   std::map<string, int> type_to_index;
+
   // Setters
   // ===========================================================================
   Node_Container(const CharacterVector &nodes_id,
                  const CharacterVector &nodes_type,
                  const CharacterVector &types_name,
-                 const IntegerVector   &types_count)
+                 const IntegerVector   &types_count,
+                 const int              random_seed = 42)
   {
+    set_random_seed(random_seed);
+
     const int num_types = types_name.size();
 
     // Reserve proper number of sub vectors for nodes based on number of types
@@ -76,6 +88,46 @@ public:
     }
 
   }
+
+  Node_Container(const int num_blocks, Node_Container& child_nodes){
+    // Initialize `nodes` vec with `child_nodes.num_types()` elements
+    const int num_types = child_nodes.num_types();
+    nodes = Node_Type_Vec(num_types);
+
+    // Loop over types
+    for (int type_i = 0; type_i < num_types; type_i++) {
+      // Pull reference to children nodes of this type
+      auto& child_nodes_of_type = child_nodes.get_nodes_of_type(type_i);
+
+      if (num_blocks <= child_nodes_of_type.size()){
+        stop("Can't initialize more blocks than there are nodes of a given type");
+      }
+
+      // Reserve elements for new nodes
+      auto& blocks_for_type = nodes[type_i];
+      blocks_for_type.reserve(num_blocks);
+
+      for (int i = 0; i < num_blocks; i++) {
+        // Build a new block node wrapped in smart pointer in it's type vector
+        blocks_for_type.emplace_back(new Node(-1, type_i));
+      }
+
+      // Shuffle child nodes
+      std::shuffle(child_nodes_of_type.begin(), child_nodes_of_type.end(), random_engine);
+
+      // Loop through now shuffled children nodes
+      for (int i = 0; i < child_nodes_of_type.size(); i++) {
+        Node * parent_block = blocks_for_type[i % num_blocks].get();
+        Node * child_node = child_nodes_of_type[i].get();
+
+        // Add blocks one at a time, looping back after end to each node
+        child_node->set_parent(parent_block);
+
+        // Add child to parent block
+        parent_block->add_child(child_node);
+      } // End block to child node assignment
+    } // End loop over node types
+  } // End constructor
 
   // Getters
   // ===========================================================================

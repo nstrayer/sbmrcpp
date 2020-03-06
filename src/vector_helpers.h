@@ -12,31 +12,43 @@ using U_Ptr_Vec = std::vector<U_Ptr<T>>;
 
 
 template <typename T>
-void delete_from_vector(std::vector<T> & vec, const T to_remove){
+bool delete_from_vector(std::vector<T> & vec, const T to_remove){
 
   // Get iterator to the element we're deleting
   auto it = std::find(vec.begin(), vec.end(), to_remove);
+  if(it == vec.end()) {
+    // If requested element couldn't be found, return false
+    return false;
+  }
 
   // Swap element to delete and last element in vector
   std::swap(*it, vec.back());
 
   // Remove/delete last element of vector
   vec.pop_back();
+
+  return true;
 }
 
 
 
 template <typename T>
-void delete_from_vector(U_Ptr_Vec<T> & vec, const T * el){
+bool delete_from_vector(U_Ptr_Vec<T> & vec, const T * el){
 
   // Get iterator to the element we're deleting
   auto it = std::find_if(vec.begin(), vec.end(), [&el](const U_Ptr<T>& ptr){return ptr.get() == el;});
 
+  if(it == vec.end()) {
+    // If requested element couldn't be found, return false
+    return false;
+  }
   // Swap element to delete and last element in vector
   std::swap(*it, vec.back());
 
   // Remove/delete last element of vector
   vec.pop_back();
+
+  return true;
 }
 
 

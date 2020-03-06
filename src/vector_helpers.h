@@ -21,27 +21,29 @@ void delete_from_vector(std::vector<T> & vec, const T & to_remove){
   vec.pop_back();
 }
 
+template <typename T>
+  using U_Ptr = std::unique_ptr<T>;
 
-void delete_node(Node_Ptr_Vec & node_vec, Node * to_remove){
+template <typename T>
+  using U_Ptr_Vec = std::vector<U_Ptr<T>>;
 
-  auto find_to_remove = [&to_remove](const Node_Ptr& node_unique_ptr){
-    return node_unique_ptr.get() == to_remove;
-  };
+template <typename T>
+void delete_from_vector(U_Ptr_Vec<T> & vec, const T * el){
 
-  // Get iterator to the Node we're deleting
-  auto it = std::find_if(node_vec.begin(), node_vec.end(), find_to_remove);
+  // Get iterator to the element we're deleting
+  auto it = std::find_if(vec.begin(), vec.end(), [&el](const U_Ptr<T>& ptr){return ptr.get() == el;});
 
   // Swap element to delete and last element in vector
-  std::swap(*it, node_vec.back());
+  std::swap(*it, vec.back());
 
   // Remove/delete last element of vector
-  node_vec.pop_back();
+  vec.pop_back();
 }
 
 
 // Function takes a vector of smart pointers and returns a vector of raw pointers that's optionally been shuffled
 template <typename T>
-std::vector<T*> shadow_copy_smart_ptr_vec(const std::vector<std::unique_ptr<T>> & vec){
+std::vector<T*> shadow_copy_smart_ptr_vec(const U_Ptr_Vec<T> & vec){
   // Instantiate vector of raw pointers for copy
   std::vector<T*> copy_vec;
   copy_vec.reserve(vec.size());

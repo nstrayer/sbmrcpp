@@ -22,6 +22,14 @@ struct Node_Loc
   int type_index = -1;  // Index at first level of a node container's nodes vector (aka type)
   int nodes_index = -1; // Index inside the node's vector for a given type
   Node_Loc(int t, int i) : type_index(t), nodes_index(i) {}
+  bool operator<(const Node_Loc & a) {
+    return type_index == a.type_index
+      ? nodes_index < a.nodes_index
+      : type_index < a.type_index;
+  }
+  bool operator=(const Node_Loc & a) {
+    return (type_index == a.type_index) & (nodes_index < a.nodes_index);
+  }
 };
 
 

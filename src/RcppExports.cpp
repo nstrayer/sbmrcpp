@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // info_about_network
-List info_about_network(const CharacterVector nodes_id, const CharacterVector nodes_type, const CharacterVector edges_from, const CharacterVector edges_to, const CharacterVector types_name, const CharacterVector types_count);
+List info_about_network(const CharacterVector nodes_id, const CharacterVector nodes_type, const CharacterVector edges_from, const CharacterVector edges_to, const CharacterVector types_name, const IntegerVector types_count);
 RcppExport SEXP _sbmrcpp_info_about_network(SEXP nodes_idSEXP, SEXP nodes_typeSEXP, SEXP edges_fromSEXP, SEXP edges_toSEXP, SEXP types_nameSEXP, SEXP types_countSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -16,7 +16,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const CharacterVector >::type edges_from(edges_fromSEXP);
     Rcpp::traits::input_parameter< const CharacterVector >::type edges_to(edges_toSEXP);
     Rcpp::traits::input_parameter< const CharacterVector >::type types_name(types_nameSEXP);
-    Rcpp::traits::input_parameter< const CharacterVector >::type types_count(types_countSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector >::type types_count(types_countSEXP);
     rcpp_result_gen = Rcpp::wrap(info_about_network(nodes_id, nodes_type, edges_from, edges_to, types_name, types_count));
     return rcpp_result_gen;
 END_RCPP

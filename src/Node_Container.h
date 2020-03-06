@@ -90,10 +90,11 @@ public:
 
     // Loop over types
     for (int type_i = 0; type_i < num_types; type_i++) {
+
       // Pull reference to children nodes of this type
       auto& child_nodes_of_type = child_nodes.get_nodes_of_type(type_i);
 
-      if (num_blocks <= child_nodes_of_type.size()){
+      if (num_blocks > child_nodes_of_type.size()){
         stop("Can't initialize more blocks than there are nodes of a given type");
       }
 

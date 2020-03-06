@@ -11,12 +11,15 @@ using string = std::string;
 
 class Node
 {
+private:
+  Int_Vec edge_indices;   // Vector of integers corresponding to the `index` of every connected node
+
 public:
   // Data
-  int index;             // Index of this node in `nodes_*` vectors
-  int type_index;        // Index of node type in `types_*` vectors
-  Int_Vec edge_indices;  // Vector of integers corresponding to the `index` of every connected node
-  int parent_index = -1; // Index of block or parent node in next-level's `Node_Container`
+  int index;              // Index of this node in `nodes_*` vectors
+  int type_index;         // Index of node type in `types_*` vectors
+  Int_Vec child_indices;  // Vector of integers corresponding to the `index` of every child node
+  Node* parent_ref;  // Index of block or parent node in next-level's `Node_Container`
 
   // Setters
   // ===========================================================================
@@ -31,9 +34,9 @@ public:
   }
 
   // Set the value of `parent_index` to a given integer
-  void add_parent(int p_i)
+  void set_parent(Node & parent_node)
   {
-    parent_index = p_i;
+    parent_ref = &parent_node;
   }
 
   // Getters

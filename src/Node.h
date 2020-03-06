@@ -9,7 +9,6 @@
 
 class Node;
 
-using Int_Vec = std::vector<int>;
 using Node_Ptrs = std::vector<Node*>;
 using string = std::string;
 
@@ -63,6 +62,7 @@ public:
   // ===========================================================================
   string get_id(const Rcpp::CharacterVector &nodes_id) const
   {
+    if(is_block()) Rcpp::stop("Cant get id of block node");
     return std::string(nodes_id.at(index));
   }
 
@@ -84,6 +84,11 @@ public:
   int num_children() const
   {
     return children.size();
+  }
+
+  const bool is_block() const
+  {
+    return index == -1;
   }
 
 

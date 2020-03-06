@@ -40,6 +40,10 @@ context("Adding blocks for unipartite network") {
     expect_true(blocks.at(0, 0).children.size() > 0);
     expect_true(blocks.at(0, 1).children.size() > 0);
   }
+
+  test_that("Wont allow more blocks than nodes") {
+    expect_error(Node_Container(4, nodes, random_engine));
+  }
 }
 
 
@@ -91,5 +95,9 @@ context("Adding blocks for tripartite network") {
     expect_true(blocks.at(1, 1).children.size() > 0);
     expect_true(blocks.at(2, 0).children.size() > 0);
     expect_true(blocks.at(2, 1).children.size() > 0);
+  }
+
+  test_that("Wont allow more blocks than nodes") {
+    expect_error(Node_Container(3, nodes, random_engine)); // Type b only has two nodes
   }
 }

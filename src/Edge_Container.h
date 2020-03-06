@@ -14,7 +14,7 @@ using Edge_Type = Ordered_Pair<int>;
 class Edge_Container {
 public:
   // Data
-  std::vector<Ordered_Pair<int>> edges; // Mirrors order of `edges_*` vectors
+  std::vector<Ordered_Pair<Node*>> edges; // Mirrors order of `edges_*` vectors
   Ordered_Pair_Set<int> edge_types;
   bool types_specified = false; // Did the user explicitly state the allowed edge types
 
@@ -35,23 +35,19 @@ public:
         Edge_Type(nodes.type_to_index.at(string(allowed_types_from[i])),
                   nodes.type_to_index.at(string(allowed_types_to[i])));
       }
-
     }
 
     // We need to quickly go from a node string id to its integer index in nodes_* vectors
-    std::unordered_map<string, Node&> node_id_to_index;
-    for (int i = 0; i < nodes_id.size(); i++) {
-      node_id_to_index.emplace(nodes_id[i], nodes.at(i));
-    }
+    auto id_to_node = nodes.get_id_to_node_map(nodes_id);
 
     auto get_node = [&](const string& node_id, const int edge_index) {
-      const auto node_loc = node_id_to_index.find(node_id);
-      if (node_loc == node_id_to_index.end()) {
+      const auto node_loc = id_to_node.find(node_id);
+      if (node_loc == id_to_node.end()) {
         stop("Node " + node_id + " from edges "
                + string(edges_from[edge_index]) + " - " + string(edges_to[edge_index])
                + " was not provided in list of nodes");
       }
-      return &(node_loc->second);
+      return node_loc->second;
     };
 
     const bool multipartite_nodes = nodes.is_multipartite();
@@ -85,11 +81,11 @@ public:
         }
       }
 
-      edges.emplace_back(from_node->index, to_node->index);
+      edges.emplace_back(from_node, to_node);
 
       // Add edges to nodes as well
-      from_node->add_edge(to_node->index);
-      to_node->add_edge(from_node->index);
+      from_node->add_edge(to_node);
+      to_node->add_edge(from_node);
     }
 
     // If we're in a unipartite network we never filled out the edge types, so do that here.

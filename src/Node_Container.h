@@ -112,6 +112,10 @@ public:
     return *nodes_of_type[location.nodes_index];
   }
 
+  Node& at(const int type_i, const int node_i){
+    return at(Node_Loc(type_i, node_i));
+  }
+
   int size() const {
     int total_num_nodes = 0;
     for(const auto& nodes_of_type : nodes){

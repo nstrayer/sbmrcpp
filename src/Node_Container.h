@@ -101,7 +101,6 @@ public:
     return nodes[type_i];
   }
 
-
   Node& at(Node_Loc location){
 
     Node_Vec& nodes_of_type = get_nodes_of_type(location.type_index);
@@ -127,6 +126,18 @@ public:
 
   bool is_multipartite() const {
     return num_types() > 1;
+  }
+
+  std::unordered_map<string, Node*> get_id_to_node_map(const CharacterVector &nodes_id){
+    std::unordered_map<string, Node*> id_to_loc;
+
+    for (const auto& type_vec : nodes) {
+      for (const auto& node : type_vec) {
+        id_to_loc.emplace(nodes_id[node->index], node.get());
+      }
+    }
+
+    return id_to_loc;
   }
 
 

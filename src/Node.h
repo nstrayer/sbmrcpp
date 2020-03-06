@@ -81,6 +81,11 @@ public:
     return parent_ref;
   }
 
+  int num_children() const
+  {
+    return children.size();
+  }
+
 
   // Comparison operators
   // ===========================================================================

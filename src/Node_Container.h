@@ -13,10 +13,15 @@ struct Type_Info
 {
   int start_index; // Start index in `nodes` for nodes of this type
   int size = -1;   // How many nodes there are of this type
-  Type_Info(int i, int s)
-      : start_index(i), size(s)
-  {
-  }
+  Type_Info(int i, int s) : start_index(i), size(s) {}
+};
+
+// Two dimensional index for a Node in a node container
+struct Node_Loc
+{
+  int type_index = -1;  // Index at first level of a node container's nodes vector (aka type)
+  int nodes_index = -1; // Index inside the node's vector for a given type
+  Node_Loc(int t, int i) : type_index(t), nodes_index(i) {}
 };
 
 
@@ -29,7 +34,7 @@ class Node_Container
 {
 private:
   const void check_for_type(const int type_i) const {
-    if (type_i > nodes.size()) stop("Invalid type");
+    if (type_i >= nodes.size()) stop("Invalid type");
   }
 public:
   // Data
@@ -75,13 +80,6 @@ public:
 
   // Getters
   // ===========================================================================
-  // Node& at(const int i){
-  //   if (i < -1 | i > nodes.size()){
-  //     stop("Invalid node index.");
-  //   }
-  //   return nodes[i];
-  // }
-
   const int size_of_type(const int type_i) const {
     check_for_type(type_i);
 
@@ -96,15 +94,15 @@ public:
   }
 
 
-  Node& at(const int type_i, const int i){
+  Node& at(Node_Loc location){
 
-    Node_Vec& nodes_of_type = get_nodes_of_type(type_i);
+    Node_Vec& nodes_of_type = get_nodes_of_type(location.type_index);
 
-    if (i > nodes_of_type.size()){
+    if (location.nodes_index >= nodes_of_type.size()){
       stop("Invalid node index.");
     }
 
-    return *nodes_of_type[i];
+    return *nodes_of_type[location.nodes_index];
   }
 
   int size() const {

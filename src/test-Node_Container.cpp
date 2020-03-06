@@ -37,6 +37,13 @@ context("Basic loading unipartite network") {
     expect_true(nodes.get_nodes_of_type(0).size() == 3);
   }
 
+  test_that("Can use .at() to find a node"){
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
+
+    expect_true(nodes.at(Node_Loc(0, 1)).index == 1 );
+    expect_error(nodes.at(Node_Loc(1, 1))); // No second type
+  }
+
 
 }
 
@@ -63,6 +70,16 @@ context("Basic loading bipartite network") {
     expect_true(nodes.get_nodes_of_type(0).size() == 2);
     expect_true(nodes.get_nodes_of_type(1).size() == 2);
   }
+
+  test_that("Can use .at() to find a node"){
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
+
+    expect_true(nodes.at(Node_Loc(0, 1)).index == 1);
+    expect_true(nodes.at(Node_Loc(1, 1)).index == 3);
+
+    expect_error(nodes.at(Node_Loc(2, 1))); // No third type
+
+  }
 }
 
 
@@ -83,9 +100,21 @@ context("Basic loading tripartite network") {
 
     expect_true(nodes.is_multipartite());
 
+    expect_true(nodes.num_types() == 3);
+
     expect_true(nodes.get_nodes_of_type(0).size() == 2);
     expect_true(nodes.get_nodes_of_type(1).size() == 1);
     expect_true(nodes.get_nodes_of_type(2).size() == 2);
+  }
+
+  test_that("Can use .at() to find a node"){
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
+
+    expect_true(nodes.at(Node_Loc(0, 1)).index == 1); // a2
+    expect_true(nodes.at(Node_Loc(1, 0)).index == 2); // b1
+    expect_true(nodes.at(Node_Loc(2, 1)).index == 4); // c2
+
+    expect_error(nodes.at(Node_Loc(1, 1))); // No b2 node
   }
 
 

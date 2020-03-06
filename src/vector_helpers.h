@@ -3,13 +3,16 @@
 
 #include <vector>
 #include <utility>
-#include "Node.h"
-
-using Node_Ptr = std::unique_ptr<Node>;
-using Node_Ptr_Vec = std::vector<Node_Ptr>;
 
 template <typename T>
-void delete_from_vector(std::vector<T> & vec, const T & to_remove){
+using U_Ptr = std::unique_ptr<T>;
+
+template <typename T>
+using U_Ptr_Vec = std::vector<U_Ptr<T>>;
+
+
+template <typename T>
+void delete_from_vector(std::vector<T> & vec, const T to_remove){
 
   // Get iterator to the element we're deleting
   auto it = std::find(vec.begin(), vec.end(), to_remove);
@@ -21,11 +24,7 @@ void delete_from_vector(std::vector<T> & vec, const T & to_remove){
   vec.pop_back();
 }
 
-template <typename T>
-  using U_Ptr = std::unique_ptr<T>;
 
-template <typename T>
-  using U_Ptr_Vec = std::vector<U_Ptr<T>>;
 
 template <typename T>
 void delete_from_vector(U_Ptr_Vec<T> & vec, const T * el){

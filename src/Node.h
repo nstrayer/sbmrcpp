@@ -27,6 +27,12 @@ public:
   // Initialize the `index` and `type_index` data members
   Node(int i, int t) : index(i), type_index(t) {}
 
+
+  Node(const Node& copied_node) = delete;             // Copy constructor
+  Node& operator=(const Node& copied_node)  = delete; // Copy assignment
+  Node(Node&& moved_node)  = delete;                  // Move constructor
+  Node& operator=(Node&& moved_node) = delete;        // Move assignment
+
   // Append to `edge_indices` vector a new edge integer
   void add_edge(int e_i)
   {

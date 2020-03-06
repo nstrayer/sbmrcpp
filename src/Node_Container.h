@@ -33,6 +33,7 @@ using Node_Unique_Ptr = std::unique_ptr<Node>;
 using Node_Vec = std::vector<Node_Unique_Ptr>;
 using Node_Type_Vec = std::vector<Node_Vec>;
 using Random_Engine = std::mt19937;
+using Id_to_Node_Map = std::unordered_map<string, Node*>;
 
 class Node_Container
 {
@@ -53,13 +54,11 @@ public:
                  const IntegerVector   &types_count)
   {
 
-    const int num_types = types_name.size();
-
     // Reserve proper number of sub vectors for nodes based on number of types
-    nodes = Node_Type_Vec(num_types);
+    nodes = Node_Type_Vec(types_name.size());
 
     // Build a map to go from type name to index for faster look-up
-    for (int i = 0; i < num_types; i++)
+    for (int i = 0; i < types_name.size(); i++)
     {
       type_to_index.emplace(types_name[i], i);  // Fill in type-to-index map entry for type
       nodes[i].reserve(types_count[i]);         // Reserve appropriate size for nodes vector for this type
@@ -74,22 +73,18 @@ public:
       if (type_index_it == type_to_index.end())
         Rcpp::stop("Node " + string(nodes_id[i]) + " has type (" + string(nodes_type[i]) + ") not found in provided node types");
 
-      // Update the reference to the
-      const int type_index = type_index_it->second;
-
       // Build a new node wrapped in smart pointer in it's type vector
-      nodes[type_index].emplace_back(new Node(i, type_index));
+      nodes[type_index_it->second].emplace_back(new Node(i, type_index_it->second));
     }
 
   }
 
   Node_Container(const int num_blocks, Node_Container& child_nodes, Random_Engine & random_engine){
-    // Initialize `nodes` vec with `child_nodes.num_types()` elements
-    const int num_types = child_nodes.num_types();
-    nodes = Node_Type_Vec(num_types);
+    // Initialize `nodes` vec proper number of types
+    nodes = Node_Type_Vec(child_nodes.num_types());
 
     // Loop over types
-    for (int type_i = 0; type_i < num_types; type_i++) {
+    for (int type_i = 0; type_i < child_nodes.num_types(); type_i++) {
 
       // Pull reference to children nodes of this type
       auto& child_nodes_of_type = child_nodes.get_nodes_of_type(type_i);
@@ -104,7 +99,7 @@ public:
 
       for (int i = 0; i < num_blocks; i++) {
         // Build a new block node wrapped in smart pointer in it's type vector
-        blocks_for_type.emplace_back(new Node(-1, type_i));
+        blocks_for_type.emplace_back(new Node(-1, type_i)); // -1 is placeholder for blocks not from data
       }
 
       // Shuffle child nodes
@@ -170,8 +165,8 @@ public:
     return num_types() > 1;
   }
 
-  std::unordered_map<string, Node*> get_id_to_node_map(const CharacterVector &nodes_id){
-    std::unordered_map<string, Node*> id_to_loc;
+  Id_to_Node_Map get_id_to_node_map(const CharacterVector &nodes_id){
+    Id_to_Node_Map id_to_loc;
 
     for (const auto& type_vec : nodes) {
       for (const auto& node : type_vec) {
@@ -181,8 +176,6 @@ public:
 
     return id_to_loc;
   }
-
-
 };
 
 #endif

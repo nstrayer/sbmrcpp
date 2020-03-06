@@ -54,23 +54,3 @@ context("Efficient deletion of elements in Node vector") {
     expect_true(node_vec.at(1)->index == 3);
   }
 }
-
-
-context("Make a shadow copy of a vector of unique pointers"){
-  //  Setup a vector of unique node pointers
-  std::vector<std::unique_ptr<Node>> node_vec;
-  node_vec.emplace_back(new Node(0, 0));
-  node_vec.emplace_back(new Node(1, 0));
-  node_vec.emplace_back(new Node(2, 1));
-  node_vec.emplace_back(new Node(3, 1));
-
-  // Make copy
-  std::vector<Node*> copied_vec = shadow_copy_smart_ptr_vec(node_vec);
-
-  // Make sure all elements point to the proper place on the original vector
-  expect_true(node_vec[0].get() == copied_vec[0]);
-  expect_true(node_vec[1].get() == copied_vec[1]);
-  expect_true(node_vec[2].get() == copied_vec[2]);
-  expect_true(node_vec[3].get() == copied_vec[3]);
-
-}

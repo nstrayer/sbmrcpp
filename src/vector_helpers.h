@@ -1,8 +1,8 @@
 #ifndef __VECTOR_HELPERS_INCLUDED__
 #define __VECTOR_HELPERS_INCLUDED__
 
-#include <vector>
 #include <utility>
+#include <vector>
 
 template <typename T>
 using U_Ptr = std::unique_ptr<T>;
@@ -10,16 +10,14 @@ using U_Ptr = std::unique_ptr<T>;
 template <typename T>
 using U_Ptr_Vec = std::vector<U_Ptr<T>>;
 
-
 template <typename T>
-bool delete_from_vector(std::vector<T> & vec, const T to_remove){
-
+bool delete_from_vector(std::vector<T>& vec, const T to_remove) {
   // Get iterator to the element we're deleting
   auto it = std::find(vec.begin(), vec.end(), to_remove);
-  if(it == vec.end()) {
-    // If requested element couldn't be found, return false
+
+  // If requested element couldn't be found, return false
+  if (it == vec.end())
     return false;
-  }
 
   // Swap element to delete and last element in vector
   std::swap(*it, vec.back());
@@ -30,18 +28,18 @@ bool delete_from_vector(std::vector<T> & vec, const T to_remove){
   return true;
 }
 
-
-
 template <typename T>
-bool delete_from_vector(U_Ptr_Vec<T> & vec, const T * el){
+bool delete_from_vector(U_Ptr_Vec<T>& vec, const T* el) {
+  // Lambda function to compare smart pointers and normal pointer
+  auto find_el = [&el](const U_Ptr<T>& ptr) { return ptr.get() == el; };
 
   // Get iterator to the element we're deleting
-  auto it = std::find_if(vec.begin(), vec.end(), [&el](const U_Ptr<T>& ptr){return ptr.get() == el;});
+  auto it = std::find_if(vec.begin(), vec.end(), find_el);
 
-  if(it == vec.end()) {
-    // If requested element couldn't be found, return false
+  // If requested element couldn't be found, return false
+  if (it == vec.end())
     return false;
-  }
+
   // Swap element to delete and last element in vector
   std::swap(*it, vec.back());
 
@@ -50,23 +48,5 @@ bool delete_from_vector(U_Ptr_Vec<T> & vec, const T * el){
 
   return true;
 }
-
-
-// Function takes a vector of smart pointers and returns a vector of raw pointers that's optionally been shuffled
-template <typename T>
-std::vector<T*> shadow_copy_smart_ptr_vec(const U_Ptr_Vec<T> & vec){
-  // Instantiate vector of raw pointers for copy
-  std::vector<T*> copy_vec;
-  copy_vec.reserve(vec.size());
-
-  // Fill in with raw pointers from main vec
-  for (const auto& el : vec) {
-    copy_vec.push_back(el.get());
-  }
-
-  return copy_vec;
-}
-
-
 
 #endif

@@ -20,21 +20,21 @@ context("Basic loading unipartite network") {
   const Rcpp::CharacterVector nodes_id{"a1", "a2", "a3"};
   const Rcpp::CharacterVector nodes_type{"a", "a", "a"};
   const Rcpp::CharacterVector types_name{"a"};
+  const Rcpp::IntegerMatrix types_count{3};
 
+  auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
 
   test_that("Sizing is correct") {
-    auto nodes = Node_Container(nodes_id, nodes_type, types_name);
-
     expect_true(nodes.size() == 3);
   }
 
   test_that("Type info is correct") {
-    auto nodes = Node_Container(nodes_id, nodes_type, types_name);
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
 
     expect_false(nodes.is_multipartite());
 
-    expect_true(nodes.get_nodes_of_type(0).start_index == 0);
-    expect_true(nodes.get_nodes_of_type(0).size == 3);
+    expect_true(nodes.num_types() == 1);
+    expect_true(nodes.get_nodes_of_type(0).size() == 3);
   }
 
 
@@ -46,20 +46,22 @@ context("Basic loading bipartite network") {
   const Rcpp::CharacterVector nodes_id{"a1", "a2", "b1", "b2"};
   const Rcpp::CharacterVector nodes_type{"a", "a", "b", "b"};
   const Rcpp::CharacterVector types_name{"a", "b"};
+  const Rcpp::IntegerMatrix types_count{2, 2};
+
 
   test_that("Sizing is correct") {
-    expect_true(Node_Container(nodes_id, nodes_type, types_name).size() == 4);
+    expect_true(Node_Container(nodes_id, nodes_type, types_name, types_count).size() == 4);
   }
 
   test_that("Type info is correct") {
-    auto nodes = Node_Container(nodes_id, nodes_type, types_name);
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
 
     expect_true(nodes.is_multipartite());
 
-    expect_true(nodes.get_nodes_of_type(0).start_index == 0);
-    expect_true(nodes.get_nodes_of_type(0).size == 2);
-    expect_true(nodes.get_nodes_of_type(1).start_index == 2);
-    expect_true(nodes.get_nodes_of_type(1).size == 2);
+    expect_true(nodes.num_types() == 2);
+
+    expect_true(nodes.get_nodes_of_type(0).size() == 2);
+    expect_true(nodes.get_nodes_of_type(1).size() == 2);
   }
 }
 
@@ -69,22 +71,21 @@ context("Basic loading tripartite network") {
   const Rcpp::CharacterVector nodes_id{"a1", "a2", "b1", "c1", "c2"};
   const Rcpp::CharacterVector nodes_type{"a", "a", "b", "c", "c"};
   const Rcpp::CharacterVector types_name{"a", "b", "c"};
+  const Rcpp::IntegerMatrix types_count{  2,   1,   2};
+
 
   test_that("Sizing is correct") {
-    expect_true(Node_Container(nodes_id, nodes_type, types_name).size() == 5);
+    expect_true(Node_Container(nodes_id, nodes_type, types_name, types_count).size() == 5);
   }
 
   test_that("Type info is correct") {
-    auto nodes = Node_Container(nodes_id, nodes_type, types_name);
+    auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
 
     expect_true(nodes.is_multipartite());
 
-    expect_true(nodes.get_nodes_of_type(0).start_index == 0);
-    expect_true(nodes.get_nodes_of_type(0).size == 2);
-    expect_true(nodes.get_nodes_of_type(1).start_index == 2);
-    expect_true(nodes.get_nodes_of_type(1).size == 1);
-    expect_true(nodes.get_nodes_of_type(2).start_index == 3);
-    expect_true(nodes.get_nodes_of_type(2).size == 2);
+    expect_true(nodes.get_nodes_of_type(0).size() == 2);
+    expect_true(nodes.get_nodes_of_type(1).size() == 1);
+    expect_true(nodes.get_nodes_of_type(2).size() == 2);
   }
 
 

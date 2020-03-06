@@ -5,6 +5,8 @@
 #include <Rcpp.h>
 #include <vector>
 
+#include "vector_helpers.h"
+
 class Node;
 
 using Int_Vec = std::vector<int>;
@@ -39,6 +41,16 @@ public:
   void add_edge(Node * connected_node_ptr)
   {
     edges.push_back(connected_node_ptr);
+  }
+
+  void add_child(Node * child_node_ptr)
+  {
+    children.push_back(child_node_ptr);
+  }
+
+  void remove_child(Node * child_node_ptr)
+  {
+    delete_from_vector(children, child_node_ptr);
   }
 
   // Set the value of `parent_index` to a given integer

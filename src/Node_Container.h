@@ -9,13 +9,6 @@
 
 using namespace Rcpp;
 
-struct Type_Info
-{
-  int start_index; // Start index in `nodes` for nodes of this type
-  int size = -1;   // How many nodes there are of this type
-  Type_Info(int i, int s) : start_index(i), size(s) {}
-};
-
 // Two dimensional index for a Node in a node container
 struct Node_Loc
 {
@@ -33,7 +26,6 @@ struct Node_Loc
 };
 
 
-using Type_Info_Map = std::map<int, Type_Info>;
 using Node_Unique_Ptr = std::unique_ptr<Node>;
 using Node_Vec = std::vector<Node_Unique_Ptr>;
 using Node_Type_Vec = std::vector<Node_Vec>;
@@ -47,7 +39,6 @@ private:
 public:
   // Data
   Node_Type_Vec nodes;  // Vector of vectors type->nodes of type ordering
-  Type_Info_Map type_info; // Keyed by type_index, returns info about that type in relation to internal nodes vector
   std::map<string, int> type_to_index;
   // Setters
   // ===========================================================================

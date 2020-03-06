@@ -1,5 +1,6 @@
 #include <testthat.h>
 #include "Node_Container.h"
+#include "swap_blocks.h"
 #include <random>
 
 using Random_Engine = std::mt19937;
@@ -101,3 +102,35 @@ context("Adding blocks for tripartite network") {
     expect_error(Node_Container(3, nodes, random_engine)); // Type b only has two nodes
   }
 }
+
+context("Block swapping") {
+  // Three types of nodes with three nodes each
+  auto nodes = Node_Container(Rcpp::CharacterVector{"a1", "a2", "a3", "b1", "b2", "b3", "c1", "c2", "c3"},
+                              Rcpp::CharacterVector{ "a",  "a",  "a",  "b",  "b",  "b",  "c",  "c",  "c"},
+                              Rcpp::CharacterVector{"a", "b", "c"},
+                              Rcpp::IntegerVector{    3,   3,   3});
+
+  // Initialize a random engine and seed
+  Random_Engine random_engine{};
+  random_engine.seed(42);
+
+  // Give every node its own block
+  auto blocks = Node_Container(3, nodes, random_engine);
+
+  Node* node_a = &nodes.at(0,0);
+  Node* node_b = &nodes.at(0,1);
+
+  // Make sure that node a and b don't have the same parent
+  expect_true(node_a->get_parent() != node_b->get_parent());
+
+  // Swap first nodes block to the block of the second node, allowing empty block removal
+  swap_block(node_a, node_b->get_parent(), blocks, true);
+
+  // Check to make sure now the two nodes share the same block
+  expect_true(node_a->get_parent() == node_b->get_parent());
+
+  // Check to make sure the blocks for that type has shrunk by one.
+  expect_true(blocks.size_of_type(0) == 2);
+}
+
+

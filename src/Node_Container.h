@@ -37,10 +37,6 @@ using Random_Engine = std::mt19937;
 class Node_Container
 {
 private:
-  Random_Engine random_engine{};  // Default random engine state. Seed set in constructor
-  void set_random_seed(const int s) { // Seed engine with a specified state
-    random_engine.seed(s);
-  }
   const void check_for_type(const int type_i) const {
     if (type_i >= nodes.size()) stop("Invalid type");
   }
@@ -54,10 +50,8 @@ public:
   Node_Container(const CharacterVector &nodes_id,
                  const CharacterVector &nodes_type,
                  const CharacterVector &types_name,
-                 const IntegerVector   &types_count,
-                 const int              random_seed = 42)
+                 const IntegerVector   &types_count)
   {
-    set_random_seed(random_seed);
 
     const int num_types = types_name.size();
 
@@ -89,7 +83,7 @@ public:
 
   }
 
-  Node_Container(const int num_blocks, Node_Container& child_nodes){
+  Node_Container(const int num_blocks, Node_Container& child_nodes, Random_Engine & random_engine){
     // Initialize `nodes` vec with `child_nodes.num_types()` elements
     const int num_types = child_nodes.num_types();
     nodes = Node_Type_Vec(num_types);

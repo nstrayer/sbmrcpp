@@ -1,8 +1,11 @@
 #ifndef __VECTOR_HELPERS_INCLUDED__
 #define __VECTOR_HELPERS_INCLUDED__
 
+#include <Rcpp.h>
 #include <utility>
 #include <vector>
+#include <random>
+
 
 template <typename T>
 using Vec_of_Vecs = std::vector<std::vector<T>>;
@@ -60,6 +63,30 @@ int total_num_elements(const Vec_of_Vecs<T>& vec_of_vecs) {
     total += sub_vec.size();
   }
   return total;
+}
+
+// Total number of elements in a vector of vectors
+template <typename T>
+T get_random_element(const Vec_of_Vecs<T>& vec_of_vecs, std::mt19937& random_generator) {
+  // Make a random uniform to index into vectors
+  std::uniform_int_distribution<> runif {0, total_num_elements(vec_of_vecs) - 1};
+
+  int random_index = runif(random_generator);
+
+  // Loop through subvectors and see if we can index into sub vector with random index
+  // If we can't then subtract the current subvector size from random index and keep going
+  for (const auto& sub_vec : vec_of_vecs) {
+    const int current_size = sub_vec.size();
+
+    if(current_size > random_index){
+      random_index -= current_size;
+    } else {
+      return sub_vec[random_index];
+    }
+  }
+  Rcpp::stop("Random element could not be selected. Check formation of vectors");
+  // Default return is just the first element... potentially dangerous
+  vec_of_vecs.at(0).at(0);
 }
 
 #endif

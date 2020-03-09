@@ -51,7 +51,6 @@ class Node {
 
   // Getters
   // ===========================================================================
-
   int get_degree() const { return total_num_elements(edges); }
 
   Node* get_parent() const { return parent_ref; }
@@ -59,6 +58,8 @@ class Node {
   int num_children() const { return children.size(); }
 
   const bool is_block() const { return index == -1; }
+
+  const Node_Ptrs& edges_to_type(const int type) const { return edges.at(type); }
 
   string get_id(const CharacterVector& nodes_id) const {
     if (is_block())

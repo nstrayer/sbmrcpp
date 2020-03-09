@@ -59,6 +59,19 @@ class Node {
 
   const bool is_block() const { return index == -1; }
 
+  // Give back a vector of the types that actually contain non-empty edges
+  const std::vector<int> get_connected_types() const {
+    std::vector<int> types_w_nodes;
+    types_w_nodes.reserve(edges.size());
+    for (int i = 0; i < edges.size(); i++) {
+      if (edges[i].size() > 0){
+        types_w_nodes.push_back(i);
+      }
+    }
+
+    return types_w_nodes;
+  }
+
   const Node_Ptrs& get_edges_to_type(const int type) const { return edges.at(type); }
 
   string get_id(const CharacterVector& nodes_id) const {

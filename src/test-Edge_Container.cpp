@@ -201,25 +201,39 @@ context("Fully connected tripartite network") {
     Node& c2 = nodes.at(2, 1);
 
     // Make sure edges are divvied over connection types properly
+    std::vector<int> types_a_b{0,1};
+    std::vector<int> types_b_c{1,2};
+    std::vector<int> types_a_c{0,2};
+
     expect_true(a1.get_degree() == 2);
     expect_true(a1.get_edges_to_type(1).size() == 1);
     expect_true(a1.get_edges_to_type(2).size() == 1);
+    expect_true(a1.get_connected_types() == types_b_c);
+
 
     expect_true(a2.get_degree() == 2);
     expect_true(a2.get_edges_to_type(1).size() == 1);
     expect_true(a2.get_edges_to_type(2).size() == 1);
+    expect_true(a2.get_connected_types() == types_b_c);
+
 
     expect_true(b1.get_degree() == 4);
     expect_true(b1.get_edges_to_type(0).size() == 2);
     expect_true(b1.get_edges_to_type(2).size() == 2);
+    expect_true(b1.get_connected_types() == types_a_c);
+
 
     expect_true(c1.get_degree() == 2);
     expect_true(c1.get_edges_to_type(0).size() == 1);
     expect_true(c1.get_edges_to_type(1).size() == 1);
+    expect_true(c1.get_connected_types() == types_a_b);
+
 
     expect_true(c2.get_degree() == 2);
     expect_true(c2.get_edges_to_type(0).size() == 1);
     expect_true(c2.get_edges_to_type(1).size() == 1);
+    expect_true(c2.get_connected_types() == types_a_b);
+
   }
 
   test_that("Throws error if we have told network that we've restricted edge types"){

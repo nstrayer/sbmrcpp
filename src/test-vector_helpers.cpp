@@ -3,6 +3,8 @@
 #include "vector_helpers.h"
 #include "Node.h"
 
+
+
 context("Efficient deletion of elements in integer vector") {
 
   // Setup a basic vector
@@ -53,4 +55,43 @@ context("Efficient deletion of elements in Node vector") {
     // Second node index should now be 3
     expect_true(node_vec.at(1)->index == 3);
   }
+}
+
+context("Random selection of an element works as expected") {
+
+  std::vector<std::vector<int>> vec_of_vecs;
+
+  // Make a vector of three different vectors each with three integers
+  vec_of_vecs.push_back({0,1,2});
+  vec_of_vecs.push_back({3,4,5});
+  vec_of_vecs.push_back({6,7,8});
+
+  test_that("Sizing is proper") {
+    expect_true(vec_of_vecs.size() == 3);
+    expect_true(vec_of_vecs[0].size() == 3);
+    expect_true(vec_of_vecs[1].size() == 3);
+    expect_true(vec_of_vecs[2].size() == 3);
+  }
+
+  // Initialize a random engine and seed
+  Random_Engine random_engine{};
+  random_engine.seed(42);
+
+  const int num_samples = 1000;
+
+  int num_times_4 = 0;
+
+  for (int i = 0; i < num_samples; i++) {
+    const int sampled_int = get_random_element(vec_of_vecs, random_engine);
+
+    if(sampled_int == 4) num_times_4++;
+  }
+
+  const double proportion_4 = double(num_times_4)/double(num_samples);
+  const double thresh = 0.01;
+  const double true_prop = 1.0/9.0;
+  // Hope that four is chosen 1/9th of the time
+  expect_true(proportion_4 > true_prop - thresh);
+  expect_true(proportion_4 < true_prop + thresh);
+
 }

@@ -78,7 +78,7 @@ T get_random_element(const Vec_of_Vecs<T>& vec_of_vecs, std::mt19937& random_gen
   for (const auto& sub_vec : vec_of_vecs) {
     const int current_size = sub_vec.size();
 
-    if(current_size > random_index){
+    if(current_size < random_index){
       random_index -= current_size;
     } else {
       return sub_vec[random_index];
@@ -86,7 +86,7 @@ T get_random_element(const Vec_of_Vecs<T>& vec_of_vecs, std::mt19937& random_gen
   }
   Rcpp::stop("Random element could not be selected. Check formation of vectors");
   // Default return is just the first element... potentially dangerous
-  vec_of_vecs.at(0).at(0);
+  return vec_of_vecs.at(0).at(0);
 }
 
 #endif

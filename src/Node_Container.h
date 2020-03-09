@@ -4,7 +4,6 @@
 // [[Rcpp::plugins(cpp11)]]
 #include <map>
 #include <memory>
-#include <random>
 
 #include <Rcpp.h>
 #include "Node.h"
@@ -30,7 +29,6 @@ struct Node_Loc {
 using Node_Unique_Ptr = std::unique_ptr<Node>;
 using Node_Vec = std::vector<Node_Unique_Ptr>;
 using Node_Type_Vec = std::vector<Node_Vec>;
-using Random_Engine = std::mt19937;
 using Id_to_Node_Map = std::unordered_map<string, Node*>;
 
 class Node_Container {

@@ -42,6 +42,15 @@ class Node {
   // Append to pointer to connected node to proper type edges vector
   void add_edge(Node* node_ptr) { edges[node_ptr->type_index].push_back(node_ptr); }
 
+  // Add a a whole set of edges in one go (e.g. when adding a child's edges to a block)
+  void add_edges(const Node_Type_Vecs& edges_to_add) {
+    for (int i = 0; i < edges.size(); i++) {
+      for (const auto& new_edge : edges_to_add[i]) {
+        edges[i].push_back(new_edge);
+      }
+    }
+  }
+
   void add_child(Node* child_node_ptr) { children.push_back(child_node_ptr); }
 
   void remove_child(Node* child) { delete_from_vector(children, child); }
@@ -72,7 +81,9 @@ class Node {
     return types_w_nodes;
   }
 
-  const Node_Ptrs& get_edges_to_type(const int type) const { return edges.at(type); }
+  Node_Type_Vecs& get_edges() { return edges;}
+
+  Node_Ptrs& get_edges_to_type(const int type) { return edges.at(type); }
 
   string get_id(const CharacterVector& nodes_id) const {
     if (is_block())

@@ -89,4 +89,13 @@ T get_random_element(const Vec_of_Vecs<T>& vec_of_vecs, std::mt19937& random_gen
   return vec_of_vecs.at(0).at(0);
 }
 
+template <typename T>
+T get_random_element(const std::vector<T>& vec, std::mt19937& random_generator) {
+
+  // Make a random uniform to index into vectors
+  std::uniform_int_distribution<> runif {0, int(vec.size() - 1)};
+
+  return vec[runif(random_generator)];
+}
+
 #endif

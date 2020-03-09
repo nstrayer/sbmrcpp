@@ -87,7 +87,7 @@ class Node {
 
   Node_Ptrs& get_edges_to_type(const int type) { return edges.at(type); }
 
-  Node* get_random_edge(Random_Engine& random_engine) {
+  Node* get_random_neighbor(Random_Engine& random_engine) {
     return get_random_element(edges, random_engine);
   }
 

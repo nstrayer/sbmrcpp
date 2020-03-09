@@ -35,6 +35,7 @@ using Id_to_Node_Map = std::unordered_map<string, Node*>;
 
 class Node_Container {
  private:
+  int n_types;
   const void check_for_type(const int type_i) const {
     if (type_i >= nodes.size())
       stop("Invalid type");
@@ -43,7 +44,7 @@ class Node_Container {
   void add_node(const int index,
                 const int type_index,
                 const int n_types) {
-    nodes[type_index].emplace_back(new Node(index, type_index, type_to_index.size()));
+    nodes[type_index].emplace_back(new Node(index, type_index, n_types));
   }
 
  public:
@@ -57,12 +58,13 @@ class Node_Container {
                  const CharacterVector& nodes_type,
                  const CharacterVector& types_name,
                  const IntegerVector& types_count){
+    n_types = types_name.size();
 
     // Reserve proper number of sub vectors for nodes based on number of types
-    nodes = Node_Type_Vec(types_name.size());
+    nodes = Node_Type_Vec(n_types);
 
     // Build a map to go from type name to index for faster look-up
-    for (int i = 0; i < types_name.size(); i++) {
+    for (int i = 0; i < n_types; i++) {
       // Fill in type-to-index map entry for type
       type_to_index.emplace(types_name[i], i);
 
@@ -90,7 +92,7 @@ class Node_Container {
   Node_Container(const int num_blocks,
                  Node_Container& child_nodes,
                  Random_Engine& random_engine) {
-    const int n_types = child_nodes.num_types();
+    n_types = child_nodes.num_types();
     // Initialize `nodes` vec proper number of types
     nodes = Node_Type_Vec(n_types);
 
@@ -160,9 +162,9 @@ class Node_Container {
 
   int size() const { return total_num_elements(nodes); }
 
-  int num_types() const { return nodes.size(); }
+  int num_types() const { return n_types; }
 
-  bool is_multipartite() const { return num_types() > 1; }
+  bool is_multipartite() const { return n_types > 1; }
 
   Id_to_Node_Map get_id_to_node_map(const CharacterVector& nodes_id) {
     Id_to_Node_Map id_to_loc;

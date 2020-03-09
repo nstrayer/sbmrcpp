@@ -4,12 +4,14 @@
 // [[Rcpp::plugins(cpp11)]]
 #include <Rcpp.h>
 #include <vector>
+#include <random>
 
 #include "vector_helpers.h"
 
 using namespace Rcpp;
 class Node;
 
+using Random_Engine = std::mt19937;
 using Node_Ptrs = std::vector<Node*>;
 using Node_Type_Vecs = std::vector<Node_Ptrs>;
 using string = std::string;
@@ -84,6 +86,10 @@ class Node {
   Node_Type_Vecs& get_edges() { return edges;}
 
   Node_Ptrs& get_edges_to_type(const int type) { return edges.at(type); }
+
+  Node* get_random_edge(Random_Engine& random_engine) {
+    return get_random_element(edges, random_engine);
+  }
 
   string get_id(const CharacterVector& nodes_id) const {
     if (is_block())

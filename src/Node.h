@@ -59,7 +59,7 @@ class Node {
 
   const bool is_block() const { return index == -1; }
 
-  const Node_Ptrs& edges_to_type(const int type) const { return edges.at(type); }
+  const Node_Ptrs& get_edges_to_type(const int type) const { return edges.at(type); }
 
   string get_id(const CharacterVector& nodes_id) const {
     if (is_block())

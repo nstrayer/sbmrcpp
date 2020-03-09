@@ -71,8 +71,13 @@ context("Node edges are updated after construction of Edge_Container") {
 
     auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
     expect_true(nodes.at(0, 0).get_degree() == 4); // a1
+    expect_true(nodes.at(0, 0).get_edges_to_type(0).size() == 4); // a1
+
     expect_true(nodes.at(0, 1).get_degree() == 2); // a2
+    expect_true(nodes.at(0, 1).get_edges_to_type(0).size() == 2); // a2
+
     expect_true(nodes.at(0, 2).get_degree() == 2); // a3
+    expect_true(nodes.at(0, 2).get_edges_to_type(0).size() == 2); // a3
   }
 }
 
@@ -130,6 +135,32 @@ context("Basic tripartite network") {
     expect_true(edges.edge_types.size() == 2);
   }
 
+  test_that("Node edges are updated"){
+    Node& a1 = nodes.at(0, 0);
+    Node& a2 = nodes.at(0, 1);
+    Node& b1 = nodes.at(1, 0);
+    Node& c1 = nodes.at(2, 0);
+    Node& c2 = nodes.at(2, 1);
+
+    // Make sure edges are divvied over connection types properly
+    expect_true(a1.get_degree() == 2);
+    expect_true(a1.get_edges_to_type(1).size() == 1);
+    expect_true(a1.get_edges_to_type(2).size() == 1);
+
+    expect_true(a2.get_degree() == 2);
+    expect_true(a2.get_edges_to_type(1).size() == 1);
+    expect_true(a2.get_edges_to_type(2).size() == 1);
+
+    expect_true(b1.get_degree() == 2);
+    expect_true(b1.get_edges_to_type(0).size() == 2);
+
+    expect_true(c1.get_degree() == 1);
+    expect_true(c1.get_edges_to_type(0).size() == 1);
+
+    expect_true(c2.get_degree() == 1);
+    expect_true(c2.get_edges_to_type(0).size() == 1);
+  }
+
   test_that("Errors when trying to connect two nodes of same type"){
     expect_error(
       Edge_Container(
@@ -160,6 +191,35 @@ context("Fully connected tripartite network") {
 
   test_that("Edge types were tracked"){
     expect_true(edges.edge_types.size() == 3);
+  }
+
+  test_that("Node edges are updated"){
+    Node& a1 = nodes.at(0, 0);
+    Node& a2 = nodes.at(0, 1);
+    Node& b1 = nodes.at(1, 0);
+    Node& c1 = nodes.at(2, 0);
+    Node& c2 = nodes.at(2, 1);
+
+    // Make sure edges are divvied over connection types properly
+    expect_true(a1.get_degree() == 2);
+    expect_true(a1.get_edges_to_type(1).size() == 1);
+    expect_true(a1.get_edges_to_type(2).size() == 1);
+
+    expect_true(a2.get_degree() == 2);
+    expect_true(a2.get_edges_to_type(1).size() == 1);
+    expect_true(a2.get_edges_to_type(2).size() == 1);
+
+    expect_true(b1.get_degree() == 4);
+    expect_true(b1.get_edges_to_type(0).size() == 2);
+    expect_true(b1.get_edges_to_type(2).size() == 2);
+
+    expect_true(c1.get_degree() == 2);
+    expect_true(c1.get_edges_to_type(0).size() == 1);
+    expect_true(c1.get_edges_to_type(1).size() == 1);
+
+    expect_true(c2.get_degree() == 2);
+    expect_true(c2.get_edges_to_type(0).size() == 1);
+    expect_true(c2.get_edges_to_type(1).size() == 1);
   }
 
   test_that("Throws error if we have told network that we've restricted edge types"){

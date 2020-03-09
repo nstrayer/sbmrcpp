@@ -1,6 +1,6 @@
 #include <testthat.h>
 #include <vector>
-#include "vector_helpers.h"
+// #include "vector_helpers.h"
 #include "Node.h"
 
 
@@ -96,6 +96,39 @@ context("Random selection of an element in nested vectors") {
 
 }
 
+context("Random selection of an element in nested sparse vectors") {
+
+
+  // Initialize a random engine and seed
+  Random_Engine random_engine{};
+  random_engine.seed(42);
+
+  std::vector<std::vector<int>> vec_of_vecs;
+
+  // Make a vector of three different vectors each with three integers
+  vec_of_vecs.push_back({});
+  vec_of_vecs.push_back({3});
+  vec_of_vecs.push_back({});
+
+  test_that("Sizing is proper") {
+    expect_true(vec_of_vecs.size() == 3);
+    expect_true(vec_of_vecs[0].size() == 0);
+    expect_true(vec_of_vecs[1].size() == 1);
+    expect_true(vec_of_vecs[2].size() == 0);
+  }
+
+
+  const int num_samples = 100;;
+  int num_times_not_3 = 0;
+
+  for (int i = 0; i < num_samples; i++) {
+    const int sampled_int = get_random_element(vec_of_vecs, random_engine);
+
+    if(sampled_int != 3) num_times_not_3++;
+  }
+
+  expect_true(num_times_not_3 == 0);
+}
 
 context("Random selection of an element in flat vectors") {
 

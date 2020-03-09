@@ -11,11 +11,12 @@ using namespace Rcpp;
 class Node;
 
 using Node_Ptrs = std::vector<Node*>;
+using Node_Type_Vecs = std::vector<Node_Ptrs>;
 using string = std::string;
 
 class Node {
  private:
-  Node_Ptrs edges;             // Vector of pointers to every connected node
+  Node_Type_Vecs edges;        // Vector of pointers to every connected node
   Node* parent_ref = nullptr;  // Index of block or parent node in next-level's
                                // `Node_Container`
 
@@ -29,15 +30,17 @@ class Node {
   // ===========================================================================
 
   // Initialize the `index` and `type_index` data members
-  Node(int i, int t) : index(i), type_index(t) {}
+  Node(int i, int t, int n_t) : index(i), type_index(t) {
+    edges = Node_Type_Vecs(n_t);
+  }
 
   Node(const Node& copied_node) = delete;             // Copy constructor
   Node& operator=(const Node& copied_node) = delete;  // Copy assignment
   Node(Node&& moved_node) = delete;                   // Move constructor
   Node& operator=(Node&& moved_node) = delete;        // Move assignment
 
-  // Append to `edges` vector a new edge integer
-  void add_edge(Node* node_ptr) { edges.push_back(node_ptr); }
+  // Append to pointer to connected node to proper type edges vector
+  void add_edge(Node* node_ptr) { edges[node_ptr->type_index].push_back(node_ptr); }
 
   void add_child(Node* child_node_ptr) { children.push_back(child_node_ptr); }
 
@@ -49,7 +52,7 @@ class Node {
   // Getters
   // ===========================================================================
 
-  int get_degree() const { return edges.size(); }
+  int get_degree() const { return total_num_elements(edges); }
 
   Node* get_parent() const { return parent_ref; }
 

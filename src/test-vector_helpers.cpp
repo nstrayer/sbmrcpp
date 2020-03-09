@@ -32,10 +32,10 @@ context("Efficient deletion of elements in Node vector") {
 
   //  Setup a vector of unique node pointers
   std::vector<std::unique_ptr<Node>> node_vec;
-  node_vec.emplace_back(new Node(0, 0));
-  node_vec.emplace_back(new Node(1, 0));
-  node_vec.emplace_back(new Node(2, 1));
-  node_vec.emplace_back(new Node(3, 1));
+  node_vec.emplace_back(new Node(0, 0, 2));
+  node_vec.emplace_back(new Node(1, 0, 2));
+  node_vec.emplace_back(new Node(2, 1, 2));
+  node_vec.emplace_back(new Node(3, 1, 2));
 
   test_that("Sizing reflects deletion") {
     // Before deleting we have 5 elements in vector

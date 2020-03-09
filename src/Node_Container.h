@@ -13,9 +13,10 @@ using namespace Rcpp;
 
 // Two dimensional index for a Node in a node container
 struct Node_Loc {
-  int type_index =
-      -1;  // Index at first level of a node container's nodes vector (aka type)
-  int nodes_index = -1;  // Index inside the node's vector for a given type
+  // Index at first level of a node container's nodes vector (aka type)
+  int type_index = -1;
+  // Index inside the node's vector for a given type
+  int nodes_index = -1;
   Node_Loc(int t, int i) : type_index(t), nodes_index(i) {}
   bool operator<(const Node_Loc& a) {
     return type_index == a.type_index ? nodes_index < a.nodes_index
@@ -39,6 +40,12 @@ class Node_Container {
       stop("Invalid type");
   }
 
+  void add_node(const int index,
+                const int type_index,
+                const int n_types) {
+    nodes[type_index].emplace_back(new Node(index, type_index, type_to_index.size()));
+  }
+
  public:
   // Data
   Node_Type_Vec nodes;  // Vector of vectors type->nodes of type ordering
@@ -49,7 +56,8 @@ class Node_Container {
   Node_Container(const CharacterVector& nodes_id,
                  const CharacterVector& nodes_type,
                  const CharacterVector& types_name,
-                 const IntegerVector& types_count) {
+                 const IntegerVector& types_count){
+
     // Reserve proper number of sub vectors for nodes based on number of types
     nodes = Node_Type_Vec(types_name.size());
 
@@ -58,9 +66,10 @@ class Node_Container {
       // Fill in type-to-index map entry for type
       type_to_index.emplace(types_name[i], i);
 
-      nodes[i].reserve(types_count[i]);  // Reserve appropriate size for nodes
-                                         // vector for this type
+      // Reserve appropriate size for nodes vector for this type
+      nodes[i].reserve(types_count[i]);
     }
+
 
     for (int i = 0; i < nodes_id.size(); i++) {
       // Find index for type
@@ -72,27 +81,26 @@ class Node_Container {
                    string(nodes_type[i]) +
                    ") not found in provided node types");
 
+
       // Build a new node wrapped in smart pointer in it's type vector
-      nodes[type_index_it->second].emplace_back(
-          new Node(i, type_index_it->second));
+      add_node(i, type_index_it->second, types_name.size());
     }
   }
 
   Node_Container(const int num_blocks,
                  Node_Container& child_nodes,
                  Random_Engine& random_engine) {
+    const int n_types = child_nodes.num_types();
     // Initialize `nodes` vec proper number of types
-    nodes = Node_Type_Vec(child_nodes.num_types());
+    nodes = Node_Type_Vec(n_types);
 
     // Loop over types
-    for (int type_i = 0; type_i < child_nodes.num_types(); type_i++) {
+    for (int type_i = 0; type_i < n_types; type_i++) {
       // Pull reference to children nodes of this type
       auto& child_nodes_of_type = child_nodes.get_nodes_of_type(type_i);
 
       if (num_blocks > child_nodes_of_type.size()) {
-        stop(
-            "Can't initialize more blocks than there are nodes of a given "
-            "type");
+        stop("Can't initialize more blocks than there are nodes of a given type");
       }
 
       // Reserve elements for new nodes
@@ -101,7 +109,7 @@ class Node_Container {
 
       for (int i = 0; i < num_blocks; i++) {
         // Build a new block node wrapped in smart pointer in it's type vector
-        blocks_for_type.emplace_back(new Node(-1, type_i));
+        add_node(-1, type_i, n_types);
       }
 
       // Shuffle child nodes

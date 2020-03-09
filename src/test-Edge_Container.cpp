@@ -81,7 +81,7 @@ context("Basic bipartite network") {
   const Rcpp::CharacterVector nodes_id{"a1", "a2", "b1", "b2"};
   const Rcpp::CharacterVector nodes_type{"a", "a", "b", "b"};
   const Rcpp::CharacterVector types_name{"a", "b"};
-  const Rcpp::IntegerMatrix types_count{2, 2};
+  const Rcpp::IntegerVector types_count{2, 2};
 
   // Fully connected bipartite network
   const Rcpp::CharacterVector edges_from{"a1", "a1", "a2", "a2"};

@@ -20,7 +20,7 @@ context("Basic loading unipartite network") {
   const Rcpp::CharacterVector nodes_id{"a1", "a2", "a3"};
   const Rcpp::CharacterVector nodes_type{"a", "a", "a"};
   const Rcpp::CharacterVector types_name{"a"};
-  const Rcpp::IntegerMatrix types_count{3};
+  const Rcpp::IntegerVector types_count{3};
 
   auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
 
@@ -53,7 +53,7 @@ context("Basic loading bipartite network") {
   const Rcpp::CharacterVector nodes_id{"a1", "a2", "b1", "b2"};
   const Rcpp::CharacterVector nodes_type{"a", "a", "b", "b"};
   const Rcpp::CharacterVector types_name{"a", "b"};
-  const Rcpp::IntegerMatrix types_count{2, 2};
+  const Rcpp::IntegerVector types_count{2, 2};
 
 
   test_that("Sizing is correct") {
@@ -85,8 +85,8 @@ context("Basic loading bipartite network") {
 
 context("Basic loading tripartite network") {
 
-  const Rcpp::CharacterVector nodes_id{"a1", "a2", "b1", "c1", "c2"};
-  const Rcpp::CharacterVector nodes_type{"a", "a", "b", "c", "c"};
+  const Rcpp::CharacterVector nodes_id{ "a1", "a2", "b1", "c1", "c2"};
+  const Rcpp::CharacterVector nodes_type{"a",  "a",  "b",  "c",  "c"};
   const Rcpp::CharacterVector types_name{"a", "b", "c"};
   const Rcpp::IntegerMatrix types_count{  2,   1,   2};
 

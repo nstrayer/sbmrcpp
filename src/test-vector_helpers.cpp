@@ -57,7 +57,7 @@ context("Efficient deletion of elements in Node vector") {
   }
 }
 
-context("Random selection of an element works as expected") {
+context("Random selection of an element in nested vectors") {
 
   std::vector<std::vector<int>> vec_of_vecs;
 
@@ -95,3 +95,32 @@ context("Random selection of an element works as expected") {
   expect_true(proportion_4 < true_prop + thresh);
 
 }
+
+
+context("Random selection of an element in flat vectors") {
+
+  std::vector<int> vec{0,1,2,3,4,5,6,7,8};
+
+  // Initialize a random engine and seed
+  Random_Engine random_engine{};
+  random_engine.seed(42);
+
+  const int num_samples = 1000;
+
+  int num_times_4 = 0;
+
+  for (int i = 0; i < num_samples; i++) {
+    const int sampled_int = get_random_element(vec, random_engine);
+
+    if(sampled_int == 4) num_times_4++;
+  }
+
+  const double proportion_4 = double(num_times_4)/double(num_samples);
+  const double thresh = 0.01;
+  const double true_prop = 1.0/9.0;
+  // Hope that four is chosen 1/9th of the time
+  expect_true(proportion_4 > true_prop - thresh);
+  expect_true(proportion_4 < true_prop + thresh);
+
+}
+

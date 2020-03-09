@@ -5,6 +5,9 @@
 #include <vector>
 
 template <typename T>
+using Vec_of_Vecs = std::vector<std::vector<T>>;
+
+template <typename T>
 using U_Ptr = std::unique_ptr<T>;
 
 template <typename T>
@@ -47,6 +50,16 @@ bool delete_from_vector(U_Ptr_Vec<T>& vec, const T* el) {
   vec.pop_back();
 
   return true;
+}
+
+// Total number of elements in a vector of vectors
+template <typename T>
+int total_num_elements(const Vec_of_Vecs<T>& vec_of_vecs) {
+  int total = 0;
+  for (const auto& sub_vec : vec_of_vecs) {
+    total += sub_vec.size();
+  }
+  return total;
 }
 
 #endif

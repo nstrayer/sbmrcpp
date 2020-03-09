@@ -67,18 +67,20 @@ int total_num_elements(const Vec_of_Vecs<T>& vec_of_vecs) {
 
 // Total number of elements in a vector of vectors
 template <typename T>
-T get_random_element(const Vec_of_Vecs<T>& vec_of_vecs, std::mt19937& random_generator) {
+T& get_random_element(Vec_of_Vecs<T>& vec_of_vecs, std::mt19937& random_generator) {
   // Make a random uniform to index into vectors
-  std::uniform_int_distribution<> runif {0, total_num_elements(vec_of_vecs) - 1};
+  const int n = total_num_elements(vec_of_vecs);
+  if (n == 0) Rcpp::stop("Can't take a random sample of empty vectors");
+
+  std::uniform_int_distribution<> runif {0, n - 1};
 
   int random_index = runif(random_generator);
 
   // Loop through subvectors and see if we can index into sub vector with random index
   // If we can't then subtract the current subvector size from random index and keep going
-  for (const auto& sub_vec : vec_of_vecs) {
+  for (auto& sub_vec : vec_of_vecs) {
     const int current_size = sub_vec.size();
-
-    if(current_size < random_index){
+    if(current_size <= random_index){
       random_index -= current_size;
     } else {
       return sub_vec[random_index];
@@ -90,7 +92,7 @@ T get_random_element(const Vec_of_Vecs<T>& vec_of_vecs, std::mt19937& random_gen
 }
 
 template <typename T>
-T get_random_element(const std::vector<T>& vec, std::mt19937& random_generator) {
+T& get_random_element(std::vector<T>& vec, std::mt19937& random_generator) {
 
   // Make a random uniform to index into vectors
   std::uniform_int_distribution<> runif {0, int(vec.size() - 1)};

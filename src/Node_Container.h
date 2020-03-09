@@ -150,13 +150,7 @@ class Node_Container {
     return at(Node_Loc(type_i, node_i));
   }
 
-  int size() const {
-    int total_num_nodes = 0;
-    for (const auto& nodes_of_type : nodes) {
-      total_num_nodes += nodes_of_type.size();
-    }
-    return total_num_nodes;
-  }
+  int size() const { return total_num_elements(nodes); }
 
   int num_types() const { return nodes.size(); }
 

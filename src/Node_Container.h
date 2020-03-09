@@ -128,6 +128,9 @@ class Node_Container {
 
         // Add child to parent block
         parent_block->add_child(child_node);
+
+        // Dump all the edges from child to this parent
+        parent_block->add_edges(child_node->get_edges());
       }  // End block to child node assignment
     }    // End loop over node types
   }      // End constructor

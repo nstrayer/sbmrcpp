@@ -1,6 +1,18 @@
 #ifndef __ORDERED_PAIR_INCLUDED__
 #define __ORDERED_PAIR_INCLUDED__
 
+template<typename T>
+T * ptr(T & obj) { return &obj; } //turn reference into pointer!
+
+template<typename T>
+T * ptr(T * obj) { return obj; } //obj is already pointer, return it!
+
+template<typename T>
+bool equal(const T& a, const T& b) { return *ptr(a) == *ptr(b);}
+
+template<typename T>
+bool less_than(const T& a, const T& b) { return *ptr(a) < *ptr(b); }
+
 template <typename T>
 class Ordered_Pair {
  private:
@@ -16,21 +28,21 @@ class Ordered_Pair {
   T first() const { return val_1; }
   T second() const { return val_2; }
 
-  bool is_matching() const { return val_1 == val_2; }
+  bool is_matching() const { return equal(val_1, val_2); }
 };
 
 template <typename T>
 bool operator==(const Ordered_Pair<T>& a, const Ordered_Pair<T>& b) {
-  return (a.first() == b.first()) & (a.second() == b.second());
+  return equal(a.first(), b.first()) & equal(a.second(), b.second());
 }
 
 template <typename T>
 bool operator<(const Ordered_Pair<T>& a, const Ordered_Pair<T>& b) {
   // If the first value is same as second, then check the second
-  if (a.first() == b.first()) {
-    return a.second() < b.second();
+  if (equal(a.first(), b.first())) {
+    return less_than(a.second(), b.second());
   } else {
-    return a.first() < b.first();
+    return less_than(a.first(), b.first());
   }
 }
 

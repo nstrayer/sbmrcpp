@@ -31,8 +31,8 @@ context("Block swapping") {
   // Give every node its own block
   auto blocks = Node_Container(3, nodes, random_engine);
 
-  Node* node_a = &nodes.at(0,0);
-  Node* node_b = &nodes.at(0,1);
+  Node* node_a = nodes.at(0,0);
+  Node* node_b = nodes.at(0,1);
 
   // Make sure that node a and b don't have the same parent
   expect_true(node_a->get_parent() != node_b->get_parent());
@@ -71,8 +71,8 @@ context("Edge counts are properly accounted after swapping") {
   auto blocks = Node_Container(2, nodes, random_engine);
 
   // Get reference to the two blocks that make up the a type blocks
-  Node * a1 = &nodes.at(0,0);
-  Node * a2 = &nodes.at(0,1);
+  Node * a1 = nodes.at(0,0);
+  Node * a2 = nodes.at(0,1);
   Node * ba1 = a1->get_parent();
   Node * ba2 = a2->get_parent();
 
@@ -119,7 +119,7 @@ context("Move proposals") {
   auto blocks = Node_Container(2, nodes, random_engine);
 
   // Get reference to the two blocks that make up the a type blocks
-  Node * a1 = &nodes.at(0,0);
+  Node * a1 = nodes.at(0,0);
 
   Node * proposed_block = propose_move(a1, blocks, random_engine, 0.1);
   const int num_samples = 100;
@@ -150,11 +150,11 @@ context("Move entropy delta") {
   auto blocks = Node_Container(5, nodes, random_engine); // One block per node
 
   // This order is retrieved by just printing and assigning
-  Node* n1 = &nodes.at(0, 3);
-  Node* n2 = &nodes.at(0, 1);
-  Node* n3 = &nodes.at(0, 4);
-  Node* n4 = &nodes.at(0, 0);
-  Node* n5 = &nodes.at(0, 2);
+  Node* n1 = nodes.at(0, 3);
+  Node* n2 = nodes.at(0, 1);
+  Node* n3 = nodes.at(0, 4);
+  Node* n4 = nodes.at(0, 0);
+  Node* n5 = nodes.at(0, 2);
 
   // Merge blocks for nodes 1,2 and 3,4
   swap_block(n2, n1->get_parent(), blocks);

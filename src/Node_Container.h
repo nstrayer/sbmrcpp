@@ -33,6 +33,7 @@ using Id_to_Node_Map = std::unordered_map<string, Node*>;
 
 class Node_Container {
  private:
+  bool are_block_nodes = false;
   int block_index = 0; // Every time a block is added this increases, guarenteing we have unique indices for blocks
   int n_types;
 
@@ -92,6 +93,7 @@ class Node_Container {
   Node_Container(const int num_blocks,
                  Node_Container& child_nodes,
                  Random_Engine& random_engine) {
+    are_block_nodes = true;
     n_types = child_nodes.num_types();
     // Initialize `nodes` vec proper number of types
     nodes = Node_Type_Vec(n_types);
@@ -150,17 +152,22 @@ class Node_Container {
     return nodes[type_i];
   }
 
-  Node& at(Node_Loc location) {
+  Node* at(Node_Loc location) {
     Node_Vec& nodes_of_type = get_nodes_of_type(location.type_index);
 
     if (location.nodes_index >= nodes_of_type.size()) {
       stop("Invalid node index.");
     }
 
-    return *nodes_of_type[location.nodes_index];
+    return nodes_of_type[location.nodes_index].get();
   }
 
-  Node& at(const int type_i, const int node_i) { return at(Node_Loc(type_i, node_i));}
+  Node* at(const int type_i, const int node_i) { return at(Node_Loc(type_i, node_i));}
+
+  // Node* get_node_by_id(const string& node_id) {
+  //   return std::find_if(nodes.begin(), nodes.end(),
+  //                       [&node_id](const Node* node){return node->get_id() == node_id;});
+  // }
 
   int size() const { return total_num_elements(nodes); }
 

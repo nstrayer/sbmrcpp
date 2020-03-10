@@ -164,11 +164,6 @@ class Node_Container {
 
   Node* at(const int type_i, const int node_i) { return at(Node_Loc(type_i, node_i));}
 
-  // Node* get_node_by_id(const string& node_id) {
-  //   return std::find_if(nodes.begin(), nodes.end(),
-  //                       [&node_id](const Node* node){return node->get_id() == node_id;});
-  // }
-
   int size() const { return total_num_elements(nodes); }
 
   int num_types() const { return n_types; }
@@ -176,6 +171,9 @@ class Node_Container {
   bool is_multipartite() const { return n_types > 1; }
 
   Id_to_Node_Map get_id_to_node_map(const CharacterVector& nodes_id) {
+
+    if(are_block_nodes) stop("Can't get ids to block nodes");
+
     Id_to_Node_Map id_to_loc;
 
     for (const auto& type_vec : nodes) {

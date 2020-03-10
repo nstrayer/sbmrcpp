@@ -33,7 +33,9 @@ using Id_to_Node_Map = std::unordered_map<string, Node*>;
 
 class Node_Container {
  private:
+  int block_index = 0; // Every time a block is added this increases, guarenteing we have unique indices for blocks
   int n_types;
+
   const void check_for_type(const int type_i) const {
     if (type_i >= nodes.size())
       stop("Invalid type");
@@ -109,7 +111,8 @@ class Node_Container {
 
       for (int i = 0; i < num_blocks; i++) {
         // Build a new block node wrapped in smart pointer in it's type vector
-        add_node(-1, type_i, n_types);
+        add_node(block_index, type_i, n_types);
+        block_index++;
       }
 
       // Shuffle child nodes
@@ -157,9 +160,7 @@ class Node_Container {
     return *nodes_of_type[location.nodes_index];
   }
 
-  Node& at(const int type_i, const int node_i) {
-    return at(Node_Loc(type_i, node_i));
-  }
+  Node& at(const int type_i, const int node_i) { return at(Node_Loc(type_i, node_i));}
 
   int size() const { return total_num_elements(nodes); }
 

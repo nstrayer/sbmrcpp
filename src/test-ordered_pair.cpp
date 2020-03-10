@@ -12,8 +12,10 @@
 #include <unordered_set>
 #include <testthat.h>
 #include "Ordered_Pair.h"
+#include "Node.h"
 
 using Int_Pair = Ordered_Pair<int>;
+using Node_Pair = Ordered_Pair<Node*>;
 using String_Pair = Ordered_Pair<std::string>;
 
 // Initialize a unit test context. This is similar to how you
@@ -76,6 +78,38 @@ context("Ordered_Pair template works properly with strings") {
   }
 
 }
+
+
+context("Ordered_Pair template works properly with pointers") {
+
+  //  Setup a vector of unique node pointers (To avoid )
+  std::vector<std::unique_ptr<Node>> node_vec;
+
+  auto n00 = std::unique_ptr<Node>(new Node(0, 0, 2));
+  auto n10 = std::unique_ptr<Node>(new Node(1, 0, 2));
+  auto n21 = std::unique_ptr<Node>(new Node(2, 1, 2));
+
+  auto n00_n10 = Node_Pair(n00.get(), n10.get());
+  auto n10_n00 = Node_Pair(n10.get(), n00.get());
+  auto n10_n21 = Node_Pair(n10.get(), n21.get());
+
+
+  test_that("Equality works") {
+    expect_true(n00_n10 == n10_n00);
+    expect_true(n00_n10 == Node_Pair(n00.get(), n10.get()));
+    expect_false(n10_n00 == n10_n21);
+  }
+
+  test_that("Proper ordering of members") {
+    expect_true(Node_Pair(n00.get(), n10.get()) == Node_Pair(n10.get(), n00.get()));
+    expect_true(Node_Pair(n10.get(), n21.get()) == Node_Pair(n21.get(), n10.get()));
+
+    expect_true(Node_Pair(n10.get(), n00.get()).first() == n00.get());
+    expect_true(Node_Pair(n00.get(), n10.get()).first() == n00.get());
+  }
+
+}
+
 
 context("Hashing works properly with ints") {
 

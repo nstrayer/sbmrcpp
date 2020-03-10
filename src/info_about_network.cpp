@@ -1,7 +1,7 @@
 #include <Rcpp.h>
-#include "Node_Container.h"
+// #include "Node_Container.h"
 #include "Edge_Container.h"
-#include "Ordered_Pair.h"
+// #include "Ordered_Pair.h"
 
 using namespace Rcpp;
 
@@ -23,16 +23,6 @@ List info_about_network(const CharacterVector nodes_id,
 
   // Assign random blocks
   auto blocks = Node_Container(5, nodes, random_engine);
-
-  // Get reference to first node in network
-  Node * n1 = &nodes.at(0,0);
-
-  Rcout << "Got node " << n1->get_id(nodes_id) << " with degree of " << n1->get_degree() << std::endl;
-
-  Rcout << "Random neighbor: " << n1->get_random_neighbor(random_engine)->get_id(nodes_id) << std::endl;
-// //
-//   // Get a proposed move for node
-//   Node * proposed_block = propose_move(n1, blocks, random_engine, 0.1);
 
 
 

@@ -149,12 +149,13 @@ context("Move entropy delta") {
   auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
   auto blocks = Node_Container(5, nodes, random_engine); // One block per node
 
-  // This order is retrieved by just printing and assigning
-  Node* n1 = nodes.at(0, 3);
-  Node* n2 = nodes.at(0, 1);
-  Node* n3 = nodes.at(0, 4);
-  Node* n4 = nodes.at(0, 0);
-  Node* n5 = nodes.at(0, 2);
+  // Grab nodes by their ids
+  auto node_by_id = nodes.get_id_to_node_map(nodes_id);
+  Node* n1 = node_by_id.at("n1");
+  Node* n2 = node_by_id.at("n2");
+  Node* n3 = node_by_id.at("n3");
+  Node* n4 = node_by_id.at("n4");
+  Node* n5 = node_by_id.at("n5");
 
   // Merge blocks for nodes 1,2 and 3,4
   swap_block(n2, n1->get_parent(), blocks);

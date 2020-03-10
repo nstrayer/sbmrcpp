@@ -5,10 +5,9 @@
 #include "Edge_Container.h"
 
 using Edge = Ordered_Pair<Node*>;
-
 using Edge_Vec = std::vector<Edge>;
-
 using Edge_Map = std::map<Edge, int>;
+using Edge_Map_Pair = std::pair<Edge, int>;
 
 double move_entropy_delta(Node* node,
                           Node* old_block,
@@ -20,7 +19,7 @@ double move_entropy_delta(Node* node,
   Edge_Map pre_move_edge_counts;
   Edge_Map post_move_edge_counts;
 
-  // Scan down `edges` one by one (`n1`, `n2`)
+  // Scan down `edges` one by one to build pre and post edge count maps
   for (const auto& edge : edges) {
     const Node* n1 = edge.first();
     const Node* n2 = edge.second();
@@ -50,8 +49,8 @@ double move_entropy_delta(Node* node,
   // if it is either `old_block` or `new_block`.
   const int node_degree = node->get_degree();
 
-  double pre_move_edge_entropy = 0.0;
-  for (const auto& edge_count : pre_move_edge_counts) {
+  // Pre-move sum
+  auto edge_contribution_pre_move = [&](double sum, const Edge_Map_Pair& edge_count){
     const Node* g1 = edge_count.first.first();
     const Node* g2 = edge_count.first.second();
     const double n_edges = edge_count.second;
@@ -59,11 +58,12 @@ double move_entropy_delta(Node* node,
     const double g1_degree = g1->get_degree();
     const double g2_degree = g2->get_degree();
 
-    pre_move_edge_entropy += n_edges * std::log(n_edges/(g1_degree*g2_degree));
-  }
+    return sum + n_edges * std::log(n_edges/(g1_degree*g2_degree));
+  };
 
-  double post_move_edge_entropy = 0.0;
-  for (const auto& edge_count : post_move_edge_counts) {
+
+  // Post-move sum
+  auto edge_contribution_post_move = [&](double sum, const Edge_Map_Pair& edge_count){
     const Node* g1 = edge_count.first.first();
     const Node* g2 = edge_count.first.second();
     const double n_edges = edge_count.second;
@@ -76,8 +76,18 @@ double move_entropy_delta(Node* node,
     if(g2 == old_block) g2_degree -= node_degree;
     if(g2 == new_block) g2_degree += node_degree;
 
-    post_move_edge_entropy += n_edges * std::log(n_edges/(g1_degree*g2_degree));
-  }
+    return sum + n_edges * std::log(n_edges/(g1_degree*g2_degree));
+  };
+
+  double pre_move_edge_entropy = std::accumulate(pre_move_edge_counts.begin(),
+                                                 pre_move_edge_counts.end(),
+                                                 0.0,
+                                                 edge_contribution_pre_move);
+
+  double post_move_edge_entropy = std::accumulate(post_move_edge_counts.begin(),
+                                                  post_move_edge_counts.end(),
+                                                  0.0,
+                                                  edge_contribution_post_move);
 
   // Take difference of two sums
   return post_move_edge_entropy - pre_move_edge_entropy;

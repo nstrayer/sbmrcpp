@@ -8,10 +8,10 @@ template<typename T>
 T * ptr(T * obj) { return obj; } //obj is already pointer, return it!
 
 template<typename T>
-bool equal(const T& a, const T& b) { return *ptr(a) == *ptr(b);}
+inline bool equal(const T& a, const T& b) { return *ptr(a) == *ptr(b);}
 
 template<typename T>
-bool less_than(const T& a, const T& b) { return *ptr(a) < *ptr(b); }
+inline bool less_than(const T& a, const T& b) { return *ptr(a) < *ptr(b); }
 
 template <typename T>
 class Ordered_Pair {
@@ -21,7 +21,7 @@ class Ordered_Pair {
 
  public:
   Ordered_Pair(const T a, const T b)
-      : val_1(a < b ? a : b), val_2(a >= b ? a : b) {}
+      : val_1(less_than(a, b) ? a : b), val_2(less_than(a, b) ? b : a) {}
 
   std::pair<T, T> get() const { return std::make_pair(val_1, val_2); }
 

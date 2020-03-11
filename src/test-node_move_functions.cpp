@@ -174,7 +174,7 @@ context("Move entropy delta") {
   // Propose moving n4 from g2 to g3
   const double move_delta = move_entropy_delta(n4, g3, edges.edges);
 
-  expect_approx_equal(move_delta, 0.8920503);
+  expect_approx_equal(move_delta, -0.8920503);
   // Calculated this value in R using
   // pre_ent <- 2*log(2/(6 * 6)) +
   //   2*log(2/(7 * 7)) +
@@ -187,7 +187,73 @@ context("Move entropy delta") {
   //   1*log(1/(3 * 6)) +
   //   1*log(1/(5 * 5))
   //
-  // post_ent - pre_ent
-
+  // pre_ent - post_ent
 }
+
+context("Move proposal returns values are correct (simple unipartite)")
+{
+  Random_Engine random_engine{};
+  random_engine.seed(42);
+
+  auto nodes_id   = Rcpp::CharacterVector{"n1", "n2", "n3", "n4", "n5", "n6"};
+  auto nodes_type = Rcpp::CharacterVector{ "a",  "a",  "a",  "a",  "a",  "a"};
+  auto types_name  = Rcpp::CharacterVector{"a"};
+  auto types_count = Rcpp::IntegerVector{    6};
+
+  const Rcpp::CharacterVector edges_from{"n1", "n1", "n1", "n1", "n2", "n2", "n2", "n3", "n3", "n4", "n4", "n5"};
+  const Rcpp::CharacterVector   edges_to{"n2", "n3", "n4", "n5", "n3", "n4", "n5", "n4", "n6", "n5", "n6", "n6"};
+
+  auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
+  auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
+  auto blocks = Node_Container(6, nodes, random_engine); // One block per node
+
+  // Grab nodes by their ids
+  auto node_by_id = nodes.get_id_to_node_map(nodes_id);
+  Node* n1 = node_by_id.at("n1");
+  Node* n2 = node_by_id.at("n2");
+  Node* n3 = node_by_id.at("n3");
+  Node* n4 = node_by_id.at("n4");
+  Node* n5 = node_by_id.at("n5");
+  Node* n6 = node_by_id.at("n6");
+
+  // n1 and n2 share a block
+  swap_block(n2, n1->get_parent(), blocks);
+  // n3 and n4 share a block
+  swap_block(n4, n3->get_parent(), blocks);
+  // n5 and n6 share a block
+  swap_block(n6, n5->get_parent(), blocks);
+
+  // Make sure we have correct number of blocks
+  expect_true(blocks.size() == 3);
+
+  // Group c is n5 and n6's parent
+  Node* group_c = n5->get_parent();
+
+  // Propose move of n4 to group c
+  const double move_delta = move_entropy_delta(n4, group_c, edges.edges);
+
+  // Rcout << "Simple unipartite delta" << std::to_string(move_delta) << std::endl;
+
+  // expect_true(move_delta == -0.5172416);
+  // Delta from hand calculation
+  expect_approx_equal(move_delta,  0.5813706);
+}
+
+context("Move proposal returns values are correct (simple bipartite)")
+{
+  // // Setup simple SBM model
+  // SBM my_SBM = build_simple_SBM();
+  //
+  // // Now move node a2 to group a11 and calculate entropy
+  // NodePtr a2  = my_SBM.get_node_by_id("a2");
+  // NodePtr a11 = my_SBM.get_node_by_id("a11", 1);
+  //
+  // const auto proposal_results = my_SBM.make_proposal_decision(a2, a11, 0.1);
+  //
+  // // Delta from hand calculation
+  // REQUIRE(proposal_results.entropy_delta == Approx(-0.5924696).epsilon(0.1));
+  //
+  // REQUIRE(proposal_results.prob_of_accept == Approx(0.1514709).epsilon(0.1));
+}
+
 

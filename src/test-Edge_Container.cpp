@@ -26,7 +26,7 @@ context("Basic unipartite network") {
     auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
     auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
 
-    expect_true(edges.edge_types.size() == 1);
+    expect_true(edges.neighbor_types_for_node(0) == Int_Vec{0});
   }
 
 }
@@ -100,7 +100,8 @@ context("Basic bipartite network") {
   }
 
   test_that("Edge types were tracked"){
-    expect_true(edges.edge_types.size() == 1);
+    expect_true(edges.neighbor_types_for_node(0) == Int_Vec{1});
+    expect_true(edges.neighbor_types_for_node(1) == Int_Vec{0});
   }
 
   test_that("Errors when trying to connect two nodes of same type"){
@@ -132,7 +133,11 @@ context("Basic tripartite network") {
   }
 
   test_that("Edge types were tracked"){
-    expect_true(edges.edge_types.size() == 2);
+    const Int_Vec a_types = {2, 1}; // Order matters here unfortunately
+    const Int_Vec bc_types = {0};
+    expect_true(edges.neighbor_types_for_node(0) == a_types);     // a -> {b,c}
+    expect_true(edges.neighbor_types_for_node(1) == bc_types);    // b -> {a}
+    expect_true(edges.neighbor_types_for_node(2) == bc_types);    // c -> {a}
   }
 
   test_that("Node edges are updated"){
@@ -168,6 +173,14 @@ context("Basic tripartite network") {
       )
     );
   }
+
+  test_that("We can specify allowed connection types"){
+    // Allow edges between a and b and a and c types but not b-c
+    Edge_Container(edges_from, edges_to,
+                   nodes_id, nodes,
+                   Rcpp::CharacterVector{"a", "a"},
+                   Rcpp::CharacterVector{"b", "c"});
+  }
 }
 
 context("Fully connected tripartite network") {
@@ -188,7 +201,13 @@ context("Fully connected tripartite network") {
   }
 
   test_that("Edge types were tracked"){
-    expect_true(edges.edge_types.size() == 3);
+    const Int_Vec a_types = {2, 1}; // c, b
+    const Int_Vec b_types = {2, 0}; // c, a
+    const Int_Vec c_types = {1, 0}; // b, a
+
+    expect_true(edges.neighbor_types_for_node(0) == a_types);
+    expect_true(edges.neighbor_types_for_node(1) == b_types);
+    expect_true(edges.neighbor_types_for_node(2) == c_types);
   }
 
   test_that("Node edges are updated"){

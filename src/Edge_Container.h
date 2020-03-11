@@ -12,10 +12,13 @@ using string = std::string;
 using Edge_Type = Ordered_Pair<int>;
 
 class Edge_Container {
- public:
+private:
+  std::map<int, std::vector<int>> neighbor_types;
+public:
   // Data
   std::vector<Ordered_Pair<Node*>> edges;  // Mirrors order of `edges_*` vectors
-  Ordered_Pair_Set<int> edge_types;
+
+
   // Did the user explicitly state the allowed edge types
   bool types_specified = false;
 
@@ -27,6 +30,9 @@ class Edge_Container {
                  Node_Container& nodes,
                  const CharacterVector& allowed_types_from = {},
                  const CharacterVector& allowed_types_to = {}) {
+
+    Ordered_Pair_Set<int> edge_types;
+
     // If our edge_types_* vectors are not empty, we need to build allowed types
     if (allowed_types_from.size() != 0) {
       types_specified = true;
@@ -99,10 +105,21 @@ class Edge_Container {
     if (!multipartite_nodes) {
       edge_types.insert(Edge_Type(0, 0));
     }
+
+    // Last build map to go from edge type to allowed neighbor types
+    for (const auto& edge_type : edge_types) {
+      neighbor_types[edge_type.first()].push_back(edge_type.second());
+      neighbor_types[edge_type.second()].push_back(edge_type.first());
+    }
   }
+
   // Getters
   // ===========================================================================
   int size() const { return edges.size(); }
+
+  std::vector<int> neighbor_types_for_node(const int node_type) const {
+    return neighbor_types.at(node_type);
+  }
 };
 
 #endif

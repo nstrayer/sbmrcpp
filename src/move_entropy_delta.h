@@ -56,9 +56,11 @@ double move_entropy_delta(Node* node,
     const Node* g1 = edge.first();
     const Node* g2 = edge.second();
 
-    // Self edges need to be double counted because it is two "half-edges"
-    // const double n_edges = edge_count.second * (edge.is_matching() ? 2: 1);
-    const double n_edges = edge_count.second;
+    // Self edge contributions need their edge counts doubled (because they are half edges)
+    // and also need to have their total contribution divided by two
+    // because they are getting counted twice as "frequently as the off-diagonal pairs
+    const double edge_scalar = edge.is_matching() ? 2.0: 1.0;
+    const double n_edges = edge_count.second * edge_scalar;
 
     double g1_degree = g1->get_degree();
     double g2_degree = g2->get_degree();
@@ -70,7 +72,7 @@ double move_entropy_delta(Node* node,
       if(g2 == new_block) g2_degree += node_degree;
     }
 
-    return n_edges * std::log(n_edges/(g1_degree*g2_degree));
+    return n_edges * std::log(n_edges/(g1_degree*g2_degree)) / edge_scalar;
   };
 
   double pre_move_edge_entropy = std::accumulate(pre_move_edge_counts.begin(),

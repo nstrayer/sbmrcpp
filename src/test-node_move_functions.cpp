@@ -259,19 +259,52 @@ context("Move proposal returns values are correct (simple unipartite)")
 
 context("Move proposal returns values are correct (simple bipartite)")
 {
-  // // Setup simple SBM model
-  // SBM my_SBM = build_simple_SBM();
+  Random_Engine random_engine{};
+  random_engine.seed(42);
+
+  auto nodes_id   = Rcpp::CharacterVector{"a1", "a2", "a3", "a4", "b1", "b2", "b3", "b4"};
+  auto nodes_type = Rcpp::CharacterVector{ "a",  "a",  "a",  "a",  "b",  "b",  "b",  "b"};
+  auto types_name  = Rcpp::CharacterVector{"a", "b"};
+  auto types_count = Rcpp::IntegerVector{    4,   4};
+
+  const Rcpp::CharacterVector edges_from{"a1", "a2", "a2", "a3", "a3", "a3", "a4"};
+  const Rcpp::CharacterVector   edges_to{"b2", "b1", "b2", "b1", "b2", "b4", "b3"};
+
+  auto nodes = Node_Container(nodes_id, nodes_type, types_name, types_count);
+  auto edges = Edge_Container(edges_from, edges_to, nodes_id, nodes);
+  auto blocks = Node_Container(4, nodes, random_engine); // One block per node
+
+
+  // Grab nodes by their ids
+  auto n_id = nodes.get_id_to_node_map(nodes_id);
+
+  // a2 and a3 share a block
+  swap_block(n_id.at("a3"), n_id.at("a2")->get_parent(), blocks);
+
+  // b1 and b2 share a block
+  swap_block(n_id.at("b2"), n_id.at("b1")->get_parent(), blocks);
+
+  // Make sure we have correct number of blocks
+  expect_true(blocks.size() == 6);
+
+  // propose moving a2 into block with a1
+  const double move_delta = move_entropy_delta(n_id.at("a2"), n_id.at("a1")->get_parent(), edges.edges);
+
+  expect_approx_equal(move_delta, -0.5924696);
+
+  // pre_ent <-
+  //   ent(1, 1, 5) +
+  //   ent(4, 5, 5) +
+  //   ent(1, 5, 1) +
+  //   ent(1, 1, 1)
   //
-  // // Now move node a2 to group a11 and calculate entropy
-  // NodePtr a2  = my_SBM.get_node_by_id("a2");
-  // NodePtr a11 = my_SBM.get_node_by_id("a11", 1);
+  // post_ent <-
+  //   ent(3, 3, 5) +
+  //   ent(2, 3, 5) +
+  //   ent(1, 3, 1) +
+  //   ent(1, 1, 1)
   //
-  // const auto proposal_results = my_SBM.make_proposal_decision(a2, a11, 0.1);
-  //
-  // // Delta from hand calculation
-  // REQUIRE(proposal_results.entropy_delta == Approx(-0.5924696).epsilon(0.1));
-  //
-  // REQUIRE(proposal_results.prob_of_accept == Approx(0.1514709).epsilon(0.1));
+  // pre_ent - post_ent
 }
 
 

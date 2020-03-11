@@ -232,11 +232,26 @@ context("Move proposal returns values are correct (simple unipartite)")
   // Propose move of n4 to group c
   const double move_delta = move_entropy_delta(n4, group_c, edges.edges);
 
-  // Rcout << "Simple unipartite delta" << std::to_string(move_delta) << std::endl;
-
-  // expect_true(move_delta == -0.5172416);
   // Delta from hand calculation
   expect_approx_equal(move_delta,  0.5813706);
+
+  //R code for finding value
+  // ent <- function(ers, er, es) {ers * log(ers/(er*es))}
+  // pre_ent <-
+  // ent(4, 8, 9) +
+  // ent(2, 8, 7) +
+  // ent(1, 9, 9) +
+  // ent(3, 9, 7) +
+  // ent(1, 7, 7)
+  //
+  // post_ent <-
+  //   ent(2, 8,  4) +
+  //   ent(4, 8,  12)+
+  //   ent(2, 4,  12)+
+  //   ent(3, 12, 12)
+  //
+  // pre_ent - post_ent
+
 }
 
 context("Move proposal returns values are correct (simple bipartite)")

@@ -12,7 +12,7 @@ using Edge_Map_Pair = std::pair<Edge, int>;
 
 double move_entropy_delta(Node* node,
                           Node* new_block,
-                          Edge_Vec& edges){
+                          const Edge_Container& edges){
 
   Node* old_block = node->get_parent();
   // No need to go on if we're "swapping" to the same group
@@ -23,7 +23,7 @@ double move_entropy_delta(Node* node,
   Edge_Map post_move_edge_counts;
 
   // Scan down `edges` one by one to build pre and post edge count maps
-  for (const auto& edge : edges) {
+  for (const auto& edge : edges.data()) {
     const Node* n1 = edge.first();
     const Node* n2 = edge.second();
     Node* g1 = n1->get_parent();

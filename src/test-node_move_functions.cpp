@@ -172,7 +172,7 @@ context("Move entropy delta") {
   Node* g3 = n5->get_parent();
 
   // Propose moving n4 from g2 to g3
-  const double move_delta = move_entropy_delta(n4, g3, edges.edges);
+  const double move_delta = move_entropy_delta(n4, g3, edges);
 
   expect_approx_equal(move_delta, -0.1989031);
 
@@ -232,7 +232,7 @@ context("Move proposal returns values are correct (simple unipartite)")
   // Group c is n5 and n6's parent
   Node* group_c = n5->get_parent();
   // Propose move of n4 to group c
-  const double move_delta = move_entropy_delta(n4, group_c, edges.edges);
+  const double move_delta = move_entropy_delta(n4, group_c, edges);
 
   // Delta from hand calculation
   expect_approx_equal(move_delta,  -0.1117765);
@@ -288,7 +288,7 @@ context("Move proposal returns values are correct (simple bipartite)")
   expect_true(blocks.size() == 6);
 
   // propose moving a2 into block with a1
-  const double move_delta = move_entropy_delta(n_id.at("a2"), n_id.at("a1")->get_parent(), edges.edges);
+  const double move_delta = move_entropy_delta(n_id.at("a2"), n_id.at("a1")->get_parent(), edges);
 
   expect_approx_equal(move_delta, -0.5924696);
 

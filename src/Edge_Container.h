@@ -11,6 +11,7 @@ using namespace Rcpp;
 using string = std::string;
 using Edge_Type = Ordered_Pair<int>;
 using Edge_Vec = std::vector<Ordered_Pair<Node*>>;
+using Int_Vec = std::vector<int>;
 
 class Edge_Container {
 private:
@@ -19,9 +20,9 @@ private:
   // Did the user explicitly state the allowed edge types
   bool types_specified = false;
   // Map so we can easily get all potential neighbor types for a type
-  std::map<int, std::vector<int>> neighbor_types;
-public:
+  std::map<int, Int_Vec> neighbor_types;
 
+public:
   // Setters
   // ===========================================================================
   Edge_Container(const CharacterVector& edges_from,
@@ -100,17 +101,17 @@ public:
       to_node->add_edge(from_node);
     }
 
-    // If we're in a unipartite network we never filled out the edge types, so
-    // do that here.
-    if (!multipartite_nodes) {
-      edge_types.insert(Edge_Type(0, 0));
+    // Build map to go from edge type to allowed neighbor types
+    if (multipartite_nodes) {
+      for (const auto& edge_type : edge_types) {
+        neighbor_types[edge_type.first()].push_back(edge_type.second());
+        neighbor_types[edge_type.second()].push_back(edge_type.first());
+      }
+    } else {
+      // No need to be fancy with unipartite networks
+      neighbor_types[0].push_back(0);
     }
 
-    // Last build map to go from edge type to allowed neighbor types
-    for (const auto& edge_type : edge_types) {
-      neighbor_types[edge_type.first()].push_back(edge_type.second());
-      neighbor_types[edge_type.second()].push_back(edge_type.first());
-    }
   }
 
   // Getters
@@ -119,7 +120,7 @@ public:
 
   const Edge_Vec& data() const { return edges; }
 
-  std::vector<int> neighbor_types_for_node(const int node_type) const {
+  Int_Vec neighbor_types_for_node(const int node_type) const {
     return neighbor_types.at(node_type);
   }
 };

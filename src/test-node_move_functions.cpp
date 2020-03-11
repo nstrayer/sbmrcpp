@@ -174,18 +174,21 @@ context("Move entropy delta") {
   // Propose moving n4 from g2 to g3
   const double move_delta = move_entropy_delta(n4, g3, edges.edges);
 
-  expect_approx_equal(move_delta, -0.8920503);
-  // Calculated this value in R using
-  // pre_ent <- 2*log(2/(6 * 6)) +
-  //   2*log(2/(7 * 7)) +
-  //   2*log(2/(6 * 7)) +
-  //   1*log(1/(7 * 1))
+  expect_approx_equal(move_delta, -0.1989031);
+
+  // ent <- function(ers, er, es) {ers * log(ers/(er*es))}
+  // pre_ent <-
+  //   ent(4, 6, 6)/2 +
+  //   ent(4, 7, 7)/2 +
+  //   ent(2, 6, 7) +
+  //   ent(1, 7, 1)
   //
-  // post_ent <- 2*log(2/(6 * 6)) +
-  //   2*log(2/(3 * 5)) +
-  //   1*log(1/(6 * 5)) +
-  //   1*log(1/(3 * 6)) +
-  //   1*log(1/(5 * 5))
+  // post_ent <-
+  //   ent(4, 6, 6)/2 +
+  //   ent(2, 5, 5)/2 +
+  //   ent(2, 3, 5) +
+  //   ent(1, 6, 5) +
+  //   ent(1, 3, 6)
   //
   // pre_ent - post_ent
 }
@@ -228,30 +231,30 @@ context("Move proposal returns values are correct (simple unipartite)")
 
   // Group c is n5 and n6's parent
   Node* group_c = n5->get_parent();
-
   // Propose move of n4 to group c
   const double move_delta = move_entropy_delta(n4, group_c, edges.edges);
 
   // Delta from hand calculation
-  expect_approx_equal(move_delta,  0.5813706);
+  expect_approx_equal(move_delta,  -0.1117765);
 
-  //R code for finding value
+  // R code for finding value
   // ent <- function(ers, er, es) {ers * log(ers/(er*es))}
   // pre_ent <-
   // ent(4, 8, 9) +
   // ent(2, 8, 7) +
-  // ent(1, 9, 9) +
-  // ent(3, 9, 7) +
-  // ent(1, 7, 7)
+  // ent(3, 7, 9) +
+  // ent(2, 7, 7)/2 +
+  // ent(2, 9, 9)/2 +
+  // ent(2, 8, 8)/2
   //
   // post_ent <-
-  //   ent(2, 8,  4) +
-  //   ent(4, 8,  12)+
-  //   ent(2, 4,  12)+
-  //   ent(3, 12, 12)
+  // ent(2, 8, 4) +
+  // ent(4, 8, 12) +
+  // ent(2, 12, 4) +
+  // ent(2, 8, 8)/2 +
+  // ent(6, 12, 12)/2
   //
   // pre_ent - post_ent
-
 }
 
 context("Move proposal returns values are correct (simple bipartite)")

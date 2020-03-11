@@ -10,17 +10,16 @@
 using namespace Rcpp;
 using string = std::string;
 using Edge_Type = Ordered_Pair<int>;
+using Edge_Vec = std::vector<Ordered_Pair<Node*>>;
 
 class Edge_Container {
 private:
   std::map<int, std::vector<int>> neighbor_types;
-public:
   // Data
-  std::vector<Ordered_Pair<Node*>> edges;  // Mirrors order of `edges_*` vectors
-
-
+  Edge_Vec edges;  // Mirrors order of `edges_*` vectors
   // Did the user explicitly state the allowed edge types
   bool types_specified = false;
+public:
 
   // Setters
   // ===========================================================================
@@ -116,6 +115,8 @@ public:
   // Getters
   // ===========================================================================
   int size() const { return edges.size(); }
+
+  const Edge_Vec& data() const { return edges; }
 
   std::vector<int> neighbor_types_for_node(const int node_type) const {
     return neighbor_types.at(node_type);

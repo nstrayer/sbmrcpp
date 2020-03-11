@@ -10,7 +10,6 @@ using Edge_Map = std::map<Edge, int>;
 using Edge_Map_Pair = std::pair<Edge, int>;
 
 
-
 double move_entropy_delta(Node* node,
                           Node* new_block,
                           Edge_Vec& edges){
@@ -93,7 +92,7 @@ double move_entropy_delta(Node* node,
                                                   edge_contribution_post_move);
 
   // Take difference of two sums
-  return post_move_edge_entropy - pre_move_edge_entropy;
+  return pre_move_edge_entropy - post_move_edge_entropy;
 }
 
 #endif

@@ -14,11 +14,12 @@ using Edge_Vec = std::vector<Ordered_Pair<Node*>>;
 
 class Edge_Container {
 private:
-  std::map<int, std::vector<int>> neighbor_types;
-  // Data
-  Edge_Vec edges;  // Mirrors order of `edges_*` vectors
+  // Mirrors order of `edges_*` vectors
+  Edge_Vec edges;
   // Did the user explicitly state the allowed edge types
   bool types_specified = false;
+  // Map so we can easily get all potential neighbor types for a type
+  std::map<int, std::vector<int>> neighbor_types;
 public:
 
   // Setters
@@ -37,8 +38,8 @@ public:
       types_specified = true;
 
       for (int i = 0; i < allowed_types_from.size(); i++) {
-        Edge_Type(nodes.type_to_index.at(string(allowed_types_from[i])),
-                  nodes.type_to_index.at(string(allowed_types_to[i])));
+        edge_types.insert(Edge_Type(nodes.type_to_index.at(string(allowed_types_from[i])),
+                                    nodes.type_to_index.at(string(allowed_types_to[i]))));
       }
     }
 

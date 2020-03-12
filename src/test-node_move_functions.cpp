@@ -228,12 +228,12 @@ context("Move proposal returns values are correct (simple unipartite)") {
 
   // Group c is n5 and n6's parent
   Node* group_c = n5->get_parent();
+
   // Propose move of n4 to group c
-  const double move_delta = get_move_results(n4, group_c, nodes, blocks, edges).entropy_delta;
+  const auto move_results = get_move_results(n4, group_c, nodes, blocks, edges, 0.5);
 
   // Delta from hand calculation
-  expect_approx_equal(move_delta,  -0.1117765);
-
+  expect_approx_equal(move_results.entropy_delta,  -0.1117765);
   // R code for finding value
   // ent <- function(ers, er, es) {ers * log(ers/(er*es))}
   // pre_ent <-
@@ -252,6 +252,23 @@ context("Move proposal returns values are correct (simple unipartite)") {
   // ent(6, 12, 12)/2
   //
   // pre_ent - post_ent
+
+  // Probability of accepting from hand calculation
+  expect_approx_equal(move_results.prob_ratio, 0.6820954);
+  // eps <- 0.5
+  // B <- 3
+  //
+  // prob_move_to <-
+  // (2/5) * ((2 + eps) / (8 + eps*B)) +
+  // (2/5) * ((2 + eps) / (7 + eps*B)) +
+  // (1/5) * ((3 + eps) / (9 + eps*B))
+  //
+  // prob_move_back <-
+  //   (2/5) * ((2 + eps) / (8  + eps*B)) +
+  //   (2/5) * ((2 + eps) / (12 + eps*B)) +
+  //   (1/5) * ((0 + eps) / (4  + eps*B))
+  //
+  // prob_move_back/prob_move_to
 }
 
 
@@ -288,6 +305,7 @@ context("Move proposal returns values are correct (simple bipartite)") {
   const double move_delta = get_move_results(n_id.at("a2"), n_id.at("a1")->get_parent(), nodes, blocks, edges).entropy_delta;
 
   expect_approx_equal(move_delta, -0.5924696);
+
 
   // pre_ent <-
   //   ent(1, 1, 5) +

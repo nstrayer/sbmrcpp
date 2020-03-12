@@ -17,7 +17,6 @@
 // caused by a move and don't need to recalculate the block pairs that have no
 // change.
 
-#include "Node_Container.h"
 #include "Edge_Container.h"
 #include "swap_blocks.h"
 
@@ -42,13 +41,10 @@ double calc_edge_entropy(const Node_Container& nodes,
     // Determine if we want to count this edge or not
     // We count all edges if there's no subset, otherwise we only count
     // those that involve one of the new or old blocks
-    const bool count_edge = no_subset
-                         || g1 == new_block
-                         || g1 == old_block
-                         || g2 == new_block
-                         || g2 == old_block;
-
-    if(count_edge) edge_counts[Edge(g1, g2)]++;
+    if(no_subset || g1 == new_block || g1 == old_block
+                 || g2 == new_block || g2 == old_block) {
+      edge_counts[Edge(g1, g2)]++;
+    }
   }
 
   auto calc_edge_entropy_part = [](double ent_sum, const Edge_Map_Pair& edge_count){

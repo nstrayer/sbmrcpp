@@ -109,10 +109,12 @@ double move_entropy_delta(Node* node,
   auto calc_move_probs = [&] (Move_Probs& probs, const Edge_Map_Pair<Node*>& edge_count) {
 
     Node* block = edge_count.first;
-    const double prop_edges_to_block = edge_count.second/node_degree;
+    const double prop_edges_to_block = double(edge_count.second)/double(node_degree);
 
-    const double pre_move_block_to_new = pre_move_edge_counts.at(Edge{block, new_block});
-    const double post_move_block_to_old = pre_move_edge_counts.at(Edge{block, old_block});
+    // One of these may be zero...Need to run this accumulation after the others to not
+    // add additional elements to maps...
+    const double pre_move_block_to_new = pre_move_edge_counts[Edge{block, new_block}];
+    const double post_move_block_to_old = pre_move_edge_counts[Edge{block, old_block}];
 
     const double degree_pre = block->get_degree();
     double degree_post = degree_pre;
@@ -125,11 +127,7 @@ double move_entropy_delta(Node* node,
     return probs;
   };
 
-  Move_Probs start_probs;
-  // Move_Probs move_probs = std::accumulate(node_edge_counts.begin(),
-  //                                         node_edge_counts.end(),
-  //                                         start_probs,
-  //                                         calc_move_probs);
+
 
   double pre_move_edge_entropy = std::accumulate(pre_move_edge_counts.begin(),
                                                  pre_move_edge_counts.end(),
@@ -145,6 +143,10 @@ double move_entropy_delta(Node* node,
                                                     return sum + calc_edge_entropy_part(edge_count, true);
                                                   });
 
+  Move_Probs move_probs = std::accumulate(node_edge_counts.begin(),
+                                          node_edge_counts.end(),
+                                          Move_Probs(),
+                                          calc_move_probs);
 
   // Take difference of two sums
   return pre_move_edge_entropy - post_move_edge_entropy;

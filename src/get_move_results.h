@@ -1,8 +1,8 @@
-#ifndef __get_move_results_INCLUDED__
-#define __get_move_results_INCLUDED__
-
-// #include "Node_Container.h"
-// #include "Edge_Container.h"
+#pragma once
+// Takes a node and a new block along with the containers for the blocks and nodes and
+// calculates both the entropy delta of the SBM before and after the proposed move and
+// the ratio of the probabilities of moving to the proposed block before the move and
+// moving back to the original block after the move.
 #include "calc_edge_entropy.h"
 #include "calc_move_prob.h"
 #include "swap_blocks.h"
@@ -23,7 +23,6 @@ Move_Results get_move_results(Node* node,
                               Node_Container& blocks,
                               const Edge_Container& edges,
                               const double eps = 0.1){
-
   Node* old_block = node->get_parent();
 
   // No need to go on if we're "swapping" to the same group
@@ -54,6 +53,3 @@ Move_Results get_move_results(Node* node,
                       post_move_prob / pre_move_prob);
 }
 
-
-
-#endif

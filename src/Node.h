@@ -14,6 +14,7 @@ class Node;
 using Random_Engine = std::mt19937;
 using Node_Ptrs = std::vector<Node*>;
 using Node_Type_Vecs = std::vector<Node_Ptrs>;
+using Node_Edge_Counts = std::map<Node*, int>;
 using string = std::string;
 
 class Node {
@@ -86,6 +87,17 @@ class Node {
   Node_Type_Vecs& get_edges() { return edges;}
 
   Node_Ptrs& get_edges_to_type(const int type) { return edges.at(type); }
+
+  Node_Edge_Counts get_block_edge_counts() {
+    Node_Edge_Counts counts;
+
+    for (const auto& edges_of_type : edges) {
+      for (const auto& node : edges_of_type) {
+        counts[node->get_parent()]++;
+      }
+    }
+    return counts;
+  }
 
   Node* get_random_neighbor(Random_Engine& random_engine) {
     return get_random_element(edges, random_engine);

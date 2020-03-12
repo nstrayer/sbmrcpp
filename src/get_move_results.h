@@ -50,6 +50,9 @@ Move_Results get_move_results(Node* node,
   const double post_move_ent = calc_edge_entropy(nodes, edges, old_block, new_block);
   const double prob_return_to_old = calc_move_prob(node_to_blocks, old_block, node_degree, eps, epsB);
 
+  // Return node to original block
+  swap_block(node, old_block, blocks, false);
+
   return Move_Results(pre_move_ent - post_move_ent,
                       prob_return_to_old / prob_move_to_new);
 }

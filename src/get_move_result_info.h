@@ -7,12 +7,7 @@
 #include "calc_move_prob.h"
 #include "swap_blocks.h"
 
-using Edge = Ordered_Pair<Node*>;
-using Edge_Map = std::map<Edge, int>;
-using Edge_Vec = std::vector<Edge>;
 using Node_Edge_Counts = std::map<Node*, int>;
-using Edge_Count_Pair = std::pair<Node*, int>;
-using Node_It = std::vector<Node*>::iterator;
 
 double get_move_result_info(Node* node,
                           Node* new_block,

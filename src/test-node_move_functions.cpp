@@ -48,7 +48,6 @@ context("Block swapping") {
 }
 
 
-
 context("Edge counts are properly accounted after swapping") {
 
   auto nodes_id   = Rcpp::CharacterVector{"a1", "a2", "b1", "b2", "b3", "c1", "c2", "c3"};
@@ -96,7 +95,6 @@ context("Edge counts are properly accounted after swapping") {
 }
 
 
-
 context("Move proposals") {
 
   auto nodes_id   = Rcpp::CharacterVector{"a1", "a2", "b1", "b2", "b3", "c1", "c2", "c3"};
@@ -129,7 +127,6 @@ context("Move proposals") {
     expect_true(proposed_block->type_index == a1->type_index);
   }
 }
-
 
 
 context("Move entropy delta") {
@@ -172,7 +169,7 @@ context("Move entropy delta") {
   Node* g3 = n5->get_parent();
 
   // Propose moving n4 from g2 to g3
-  const double move_delta = move_entropy_delta(n4, g3, edges);
+  const double move_delta = move_entropy_delta(n4, g3, nodes, edges);
 
   expect_approx_equal(move_delta, -0.1989031);
 
@@ -193,8 +190,8 @@ context("Move entropy delta") {
   // pre_ent - post_ent
 }
 
-context("Move proposal returns values are correct (simple unipartite)")
-{
+
+context("Move proposal returns values are correct (simple unipartite)") {
   Random_Engine random_engine{};
   random_engine.seed(42);
 
@@ -232,7 +229,7 @@ context("Move proposal returns values are correct (simple unipartite)")
   // Group c is n5 and n6's parent
   Node* group_c = n5->get_parent();
   // Propose move of n4 to group c
-  const double move_delta = move_entropy_delta(n4, group_c, edges);
+  const double move_delta = move_entropy_delta(n4, group_c, nodes, edges);
 
   // Delta from hand calculation
   expect_approx_equal(move_delta,  -0.1117765);
@@ -257,8 +254,8 @@ context("Move proposal returns values are correct (simple unipartite)")
   // pre_ent - post_ent
 }
 
-context("Move proposal returns values are correct (simple bipartite)")
-{
+
+context("Move proposal returns values are correct (simple bipartite)") {
   Random_Engine random_engine{};
   random_engine.seed(42);
 
@@ -288,7 +285,7 @@ context("Move proposal returns values are correct (simple bipartite)")
   expect_true(blocks.size() == 6);
 
   // propose moving a2 into block with a1
-  const double move_delta = move_entropy_delta(n_id.at("a2"), n_id.at("a1")->get_parent(), edges);
+  const double move_delta = move_entropy_delta(n_id.at("a2"), n_id.at("a1")->get_parent(), nodes, edges);
 
   expect_approx_equal(move_delta, -0.5924696);
 

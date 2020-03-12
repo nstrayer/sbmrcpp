@@ -11,23 +11,23 @@ using Node_Edge_Counts = std::map<Node*, int>;
 
 struct Move_Results {
   double entropy_delta = 0.0;
-  double prob_ratio = 0.0;
+  double prob_ratio = 1.0;
   Move_Results(const double& e, const double& p) :
     entropy_delta(e),
     prob_ratio(p) {}
 };
 
-double get_move_results(Node* node,
-                        Node* new_block,
-                        const Node_Container& nodes,
-                        Node_Container& blocks,
-                        const Edge_Container& edges,
-                        const double eps = 0.1){
+Move_Results get_move_results(Node* node,
+                              Node* new_block,
+                              const Node_Container& nodes,
+                              Node_Container& blocks,
+                              const Edge_Container& edges,
+                              const double eps = 0.1){
 
   Node* old_block = node->get_parent();
-  // No need to go on if we're "swapping" to the same group
-  if(new_block == old_block) return 0.0;
 
+  // No need to go on if we're "swapping" to the same group
+  if(new_block == old_block) return Move_Results(0, 1);
 
   const double node_degree = node->get_degree();
   const Int_Vec node_neighbor_types = edges.neighbor_types_for_node(node->type_index);
@@ -50,7 +50,8 @@ double get_move_results(Node* node,
   const double post_move_ent = calc_edge_entropy(nodes, edges, {old_block, new_block});
   const double post_move_prob = calc_move_prob(node_to_blocks, old_block, node_degree, eps, epsB);
 
-  return pre_move_ent - post_move_ent;
+  return Move_Results(pre_move_ent - post_move_ent,
+                      post_move_prob / pre_move_prob);
 }
 
 

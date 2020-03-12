@@ -1,5 +1,5 @@
-#ifndef __get_move_result_info_INCLUDED__
-#define __get_move_result_info_INCLUDED__
+#ifndef __get_move_results_INCLUDED__
+#define __get_move_results_INCLUDED__
 
 // #include "Node_Container.h"
 // #include "Edge_Container.h"
@@ -9,12 +9,20 @@
 
 using Node_Edge_Counts = std::map<Node*, int>;
 
-double get_move_result_info(Node* node,
-                          Node* new_block,
-                          const Node_Container& nodes,
-                          Node_Container& blocks,
-                          const Edge_Container& edges,
-                          const double eps = 0.1){
+struct Move_Results {
+  double entropy_delta = 0.0;
+  double prob_ratio = 0.0;
+  Move_Results(const double& e, const double& p) :
+    entropy_delta(e),
+    prob_ratio(p) {}
+};
+
+double get_move_results(Node* node,
+                        Node* new_block,
+                        const Node_Container& nodes,
+                        Node_Container& blocks,
+                        const Edge_Container& edges,
+                        const double eps = 0.1){
 
   Node* old_block = node->get_parent();
   // No need to go on if we're "swapping" to the same group

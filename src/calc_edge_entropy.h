@@ -1,4 +1,21 @@
 #pragma once
+// Calculate the portion of entropy for network that is contributed to by the
+// block assignments. This is given by the formula:
+//   1/2 * [Sum over all pairs of blocks (r,s) : e_rs * ln(e_rs/(e_r*e_s))]
+// Where e_rs    : number of edges between blocks r and s
+//       e_{r,s} : total number of edges for blocks r or s (aka its degree)
+//
+// By using the edge list here we avoid double counting pairs of blocks (r->s,
+// and s->r) and thus we don't have to divide by 2.
+// However, as a result we need to double the contribution of pairs of same
+// blocks (e.g. r->r) because in the original formula they are also counted only
+// once.
+//
+// The arguments `new_block` and `old_block` are used to let the model know we only
+// need to calculate the entropy portion associated with edges connected to the
+// old or new blocks. This is useful when we are calculating the entropy delta
+// caused by a move and don't need to recalculate the block pairs that have no
+// change.
 
 #include "Node_Container.h"
 #include "Edge_Container.h"
@@ -10,11 +27,12 @@ using Edge_Map_Pair = std::pair<Edge, int>;
 
 double calc_edge_entropy(const Node_Container& nodes,
                          const Edge_Container& edges,
-                         const std::vector<Node*>& blocks_to_consider = {}){
+                         const Node* new_block  = nullptr,
+                         const Node* old_block  = nullptr){
   Edge_Map edge_counts;
 
   // We only look at a subset of edges if our blocks to consider vector is not empty
-  const bool no_subset = blocks_to_consider.empty();
+  const bool no_subset = new_block == nullptr;
 
   // Scan down `edges` one by one to build edge count map
   for (const auto& edge : edges.data()) {
@@ -22,11 +40,13 @@ double calc_edge_entropy(const Node_Container& nodes,
     Node* g2 = edge.second()->get_parent();
 
     // Determine if we want to count this edge or not
-    const bool count_edge = no_subset || std::any_of(blocks_to_consider.begin(),
-                                                     blocks_to_consider.end(),
-                                                     [&g1, &g2](Node* node){
-                                                       return node == g1 | node == g2;
-                                                     });;
+    // We count all edges if there's no subset, otherwise we only count
+    // those that involve one of the new or old blocks
+    const bool count_edge = no_subset
+                         || g1 == new_block
+                         || g1 == old_block
+                         || g2 == new_block
+                         || g2 == old_block;
 
     if(count_edge) edge_counts[Edge(g1, g2)]++;
   }
